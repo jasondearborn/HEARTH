@@ -1,0 +1,363 @@
+{
+  "decayH": [
+    {
+      "H": 30,
+      "retain_2wk": 0.724,
+      "retain_1mo": 0.5,
+      "retain_3mo": 0.125
+    },
+    {
+      "H": 60,
+      "retain_2wk": 0.851,
+      "retain_1mo": 0.707,
+      "retain_3mo": 0.354
+    },
+    {
+      "H": 90,
+      "retain_2wk": 0.898,
+      "retain_1mo": 0.794,
+      "retain_3mo": 0.5
+    },
+    {
+      "H": 180,
+      "retain_2wk": 0.948,
+      "retain_1mo": 0.891,
+      "retain_3mo": 0.707
+    }
+  ],
+  "penalty": [
+    {
+      "P_dir": 0.15,
+      "g": 0.0,
+      "direct_voucher_loss": 0.123,
+      "total_chain_loss": 0.245,
+      "mean_chain_depth": 2
+    },
+    {
+      "P_dir": 0.15,
+      "g": 0.2,
+      "direct_voucher_loss": 0.123,
+      "total_chain_loss": 0.335,
+      "mean_chain_depth": 5.63
+    },
+    {
+      "P_dir": 0.15,
+      "g": 0.35,
+      "direct_voucher_loss": 0.123,
+      "total_chain_loss": 0.471,
+      "mean_chain_depth": 10.24
+    },
+    {
+      "P_dir": 0.15,
+      "g": 0.5,
+      "direct_voucher_loss": 0.123,
+      "total_chain_loss": 0.67,
+      "mean_chain_depth": 14.17
+    },
+    {
+      "P_dir": 0.15,
+      "g": 0.7,
+      "direct_voucher_loss": 0.123,
+      "total_chain_loss": 1.098,
+      "mean_chain_depth": 18.05
+    },
+    {
+      "P_dir": 0.25,
+      "g": 0.0,
+      "direct_voucher_loss": 0.205,
+      "total_chain_loss": 0.409,
+      "mean_chain_depth": 2
+    },
+    {
+      "P_dir": 0.25,
+      "g": 0.2,
+      "direct_voucher_loss": 0.205,
+      "total_chain_loss": 0.595,
+      "mean_chain_depth": 10.24
+    },
+    {
+      "P_dir": 0.25,
+      "g": 0.35,
+      "direct_voucher_loss": 0.205,
+      "total_chain_loss": 0.819,
+      "mean_chain_depth": 14.17
+    },
+    {
+      "P_dir": 0.25,
+      "g": 0.5,
+      "direct_voucher_loss": 0.205,
+      "total_chain_loss": 1.148,
+      "mean_chain_depth": 16.65
+    },
+    {
+      "P_dir": 0.25,
+      "g": 0.7,
+      "direct_voucher_loss": 0.205,
+      "total_chain_loss": 1.83,
+      "mean_chain_depth": 18.07
+    },
+    {
+      "P_dir": 0.4,
+      "g": 0.0,
+      "direct_voucher_loss": 0.327,
+      "total_chain_loss": 0.654,
+      "mean_chain_depth": 2
+    },
+    {
+      "P_dir": 0.4,
+      "g": 0.2,
+      "direct_voucher_loss": 0.327,
+      "total_chain_loss": 0.952,
+      "mean_chain_depth": 10.24
+    },
+    {
+      "P_dir": 0.4,
+      "g": 0.35,
+      "direct_voucher_loss": 0.327,
+      "total_chain_loss": 1.31,
+      "mean_chain_depth": 14.17
+    },
+    {
+      "P_dir": 0.4,
+      "g": 0.5,
+      "direct_voucher_loss": 0.327,
+      "total_chain_loss": 1.846,
+      "mean_chain_depth": 17.63
+    },
+    {
+      "P_dir": 0.4,
+      "g": 0.7,
+      "direct_voucher_loss": 0.327,
+      "total_chain_loss": 2.928,
+      "mean_chain_depth": 18.07
+    }
+  ],
+  "quorum_latency": [
+    {
+      "q": 0.05,
+      "conviction_rate": 1.0,
+      "median_latency_days": 4,
+      "p90_damage_days": 10
+    },
+    {
+      "q": 0.1,
+      "conviction_rate": 1.0,
+      "median_latency_days": 10,
+      "p90_damage_days": 16
+    },
+    {
+      "q": 0.2,
+      "conviction_rate": 1.0,
+      "median_latency_days": 22,
+      "p90_damage_days": 29
+    },
+    {
+      "q": 0.25,
+      "conviction_rate": 1.0,
+      "median_latency_days": 27,
+      "p90_damage_days": 36
+    },
+    {
+      "q": 0.3,
+      "conviction_rate": 0.99,
+      "median_latency_days": 32,
+      "p90_damage_days": 41
+    },
+    {
+      "q": 0.4,
+      "conviction_rate": 0.735,
+      "median_latency_days": 43,
+      "p90_damage_days": 49
+    }
+  ],
+  "capture": [
+    {
+      "q": 0.1,
+      "f": 0.05,
+      "wrongful_rate": 0.0,
+      "quorum": 8
+    },
+    {
+      "q": 0.1,
+      "f": 0.1,
+      "wrongful_rate": 0.912,
+      "quorum": 8
+    },
+    {
+      "q": 0.1,
+      "f": 0.15,
+      "wrongful_rate": 1.0,
+      "quorum": 8
+    },
+    {
+      "q": 0.1,
+      "f": 0.2,
+      "wrongful_rate": 1.0,
+      "quorum": 8
+    },
+    {
+      "q": 0.1,
+      "f": 0.25,
+      "wrongful_rate": 1.0,
+      "quorum": 8
+    },
+    {
+      "q": 0.1,
+      "f": 0.3,
+      "wrongful_rate": 1.0,
+      "quorum": 8
+    },
+    {
+      "q": 0.1,
+      "f": 0.4,
+      "wrongful_rate": 1.0,
+      "quorum": 8
+    },
+    {
+      "q": 0.2,
+      "f": 0.05,
+      "wrongful_rate": 0.0,
+      "quorum": 16
+    },
+    {
+      "q": 0.2,
+      "f": 0.1,
+      "wrongful_rate": 0.0,
+      "quorum": 16
+    },
+    {
+      "q": 0.2,
+      "f": 0.15,
+      "wrongful_rate": 0.0,
+      "quorum": 16
+    },
+    {
+      "q": 0.2,
+      "f": 0.2,
+      "wrongful_rate": 0.963,
+      "quorum": 16
+    },
+    {
+      "q": 0.2,
+      "f": 0.25,
+      "wrongful_rate": 0.998,
+      "quorum": 16
+    },
+    {
+      "q": 0.2,
+      "f": 0.3,
+      "wrongful_rate": 1.0,
+      "quorum": 16
+    },
+    {
+      "q": 0.2,
+      "f": 0.4,
+      "wrongful_rate": 1.0,
+      "quorum": 16
+    },
+    {
+      "q": 0.25,
+      "f": 0.05,
+      "wrongful_rate": 0.0,
+      "quorum": 20
+    },
+    {
+      "q": 0.25,
+      "f": 0.1,
+      "wrongful_rate": 0.0,
+      "quorum": 20
+    },
+    {
+      "q": 0.25,
+      "f": 0.15,
+      "wrongful_rate": 0.0,
+      "quorum": 20
+    },
+    {
+      "q": 0.25,
+      "f": 0.2,
+      "wrongful_rate": 0.135,
+      "quorum": 20
+    },
+    {
+      "q": 0.25,
+      "f": 0.25,
+      "wrongful_rate": 0.97,
+      "quorum": 20
+    },
+    {
+      "q": 0.25,
+      "f": 0.3,
+      "wrongful_rate": 0.998,
+      "quorum": 20
+    },
+    {
+      "q": 0.25,
+      "f": 0.4,
+      "wrongful_rate": 1.0,
+      "quorum": 20
+    },
+    {
+      "q": 0.3,
+      "f": 0.05,
+      "wrongful_rate": 0.0,
+      "quorum": 24
+    },
+    {
+      "q": 0.3,
+      "f": 0.1,
+      "wrongful_rate": 0.0,
+      "quorum": 24
+    },
+    {
+      "q": 0.3,
+      "f": 0.15,
+      "wrongful_rate": 0.0,
+      "quorum": 24
+    },
+    {
+      "q": 0.3,
+      "f": 0.2,
+      "wrongful_rate": 0.0,
+      "quorum": 24
+    },
+    {
+      "q": 0.3,
+      "f": 0.25,
+      "wrongful_rate": 0.258,
+      "quorum": 24
+    },
+    {
+      "q": 0.3,
+      "f": 0.3,
+      "wrongful_rate": 0.973,
+      "quorum": 24
+    },
+    {
+      "q": 0.3,
+      "f": 0.4,
+      "wrongful_rate": 1.0,
+      "quorum": 24
+    }
+  ],
+  "sybil": [
+    {
+      "issuance_budget": 1,
+      "sybils_admitted": 1,
+      "days_each_sybil_must_behave_to_reach_Member": 14,
+      "voucher_slots": 2
+    },
+    {
+      "issuance_budget": 2,
+      "sybils_admitted": 2,
+      "days_each_sybil_must_behave_to_reach_Member": 14,
+      "voucher_slots": 4
+    },
+    {
+      "issuance_budget": 3,
+      "sybils_admitted": 3,
+      "days_each_sybil_must_behave_to_reach_Member": 14,
+      "voucher_slots": 6
+    }
+  ]
+}
