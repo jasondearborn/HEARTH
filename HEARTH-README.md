@@ -1,6 +1,6 @@
 # HEARTH — what it is and why it's worth your time
 
-*Tracks spec: **v4** · Last updated to match: v4 · Audience: you've used Signal, WhatsApp, Mastodon, or torrents and want the gist without the cryptography.*
+*Tracks spec: **v5** · Last updated to match: v5 · Audience: you've used Signal, WhatsApp, Mastodon, or torrents and want the gist without the cryptography.*
 
 ---
 
@@ -49,8 +49,9 @@ Each row below is a *different* thing HEARTH does — not four ways of saying "i
 
 ---
 ## Technical Specifications
-[[HEARTH-protocol-spec-v4]]
+[[HEARTH-protocol-spec-v5]]
 
 Changelog:
 
+- **v5** — the hardening pass: the spec became a real engineering document (precise rules, defined data structures, per-role requirements) instead of a narrative. New protections: two vouchers for the same newcomer now have to be genuinely independent people (with a fallback so close friends aren't locked out); a "you complained about me so I'm complaining about you" counter-complaint counts for less; tiny tribes need a bigger share of members to convict someone (harder to frame people in small groups); retracting your own mistake on the Beacon costs much less than getting caught; and every mechanism was stress-tested in simulation — two proposed rules failed their tests and were redesigned, which is written up rather than hidden.
 - **v4** — added the Beacon (public verifiable publishing) and the Federation (tribes rating tribes from your own vantage). First README.
