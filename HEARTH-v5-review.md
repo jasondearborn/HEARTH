@@ -150,3 +150,18 @@ spot checks where marked ✓.
   adversarial S5/S7 are the next evidence work (§16 #8, #10, #14).
 - **Parameter values** — no constant was retuned. Every new parameter is `provisional, evidence: none`.
 - **Anti-goals** — no change introduces a token, a global score, or a mandatory central service.
+
+## Follow-up: S8 Ember-mechanics simulation (2026-10-07)
+
+This addresses open question §16 item 8. `hearth_v5_ember_sim.py`, its tests and results are committed. Written
+up in Appendix A.10.
+
+- **Finding: §5.2.2's `δ^⌊c⌋` is falsified.** Its counter decays at the 90-day half-life. The result is that
+  frequent honest interaction earns ~0 per relationship, a pair's value drops sharply between 92 and 89 days,
+  and tribe-wide standing *falls* as interaction rises (10.9 → 2.1 `BASE_UNIT`s from 0.25 to 2 interactions/day).
+  It also lets four colluders hold Steward-eligible standing by issuing each other once a quarter.
+- **Disposition: replaced by `1/(1+c)`.** The new rule is monotone and cliff-free, caps each relationship at about
+  1 `BASE_UNIT`, and cuts the colluding-pair ceiling from 34% to 8% of the calibrated target. It ships as a
+  provisional post-simulation amendment. `BASE_UNIT` reference value: 0.08.
+- **Still open:** heterogeneous tribes (the model's uniform degree makes its tier distribution meaningless),
+  newcomer time-to-Member, multi-member cliques, and real `B_E` defaults.
