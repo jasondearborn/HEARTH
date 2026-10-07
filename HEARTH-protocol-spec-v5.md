@@ -53,7 +53,7 @@ in the appendices. These are deliberate: HEARTH's design tradition is to state w
 **not** achieve next to what it does.
 
 Protocol constants are tagged inline as `(Parameter: NAME, default, status, evidence)` and compiled in
-Appendix D. Status is one of: **sim-backed** (calibrated against the simulations in Appendices A–B),
+Appendix D. Status is one of: **sim-backed** (calibrated against the simulations in Appendices A and C),
 **provisional** (reasoned default, not yet simulated), or **deployment-tunable** (a per-tribe or
 per-implementation choice within a stated safe range).
 
@@ -79,9 +79,9 @@ per-implementation choice within a stated safe range).
 - **Federation:** the inter-tribe citation/dispute layer and the personalized composite computed from
   a reader's own affiliations (§9).
 - **Witness:** an external party (typically a bridge-partner tribe's Steward) that cosigns log
-  checkpoints to prevent equivocation (§5.4).
+  checkpoints to prevent equivocation (§5.6).
 - **Fork-and-stick:** the client rule of permanently rejecting both views upon observing inconsistent
-  signed log heads (§3.5).
+  signed log heads (§3.4).
 
 ### 0.4 Actors and conformance roles
 
@@ -115,7 +115,7 @@ bridged, loosely federated. Three primitives carry the design:
 The sybil-economics stance combines two defense classes deliberately: an **admission gate**
 (vouching, the detect-and-punish family) and **valuelessness-by-construction** (a split or fake
 identity earns near-zero throughput because budgets scale with earned standing — the pattern validated
-by Circles [CIRCLES]). §4.8 states the resulting sybilproofness argument explicitly.
+by Circles [CIRCLES]). §4.12 states the resulting sybilproofness argument explicitly.
 
 ### 1.2 Goals
 
@@ -137,7 +137,7 @@ by Circles [CIRCLES]). §4.8 states the resulting sybilproofness argument explic
   and preserved. This stance has shipped precedent: C2PA asserts provenance while explicitly declining
   value judgments [C2PA].
 - **Not global-scale; not a cryptocurrency; no token.** Financialization is what lets capital buy scale.
-- **Not strong anonymity against a global passive adversary** (§7.6), and **not marketed** for
+- **Not strong anonymity against a global passive adversary** (§7.8), and **not marketed** for
   journalists, activists, or whistleblowers.
 - **Not a broadcast platform or CDN.** The Beacon is pull-based published artifacts.
 - **Not continuous personhood verification.** HEARTH verifies humanity at admission via vouching; it
@@ -186,7 +186,7 @@ lesson is that specified-but-optional gossip does not get deployed [CT-GOSSIP]. 
 mandates, at each log: (a) **majority-threshold signatures** over log heads where a Steward set signs
 (a bare k-of-n below majority allows a Steward subset to fork views [KEYTRANS]); (b) **witness
 cosigning** of tribe-level log heads by external witnesses drawn from bridge-partner tribes [SIGSUM];
-and (c) the client-side **fork-and-stick** rule (§3.5) as the zero-infrastructure last line.
+and (c) the client-side **fork-and-stick** rule (§3.4) as the zero-infrastructure last line.
 
 ### 2.3 Record model
 
@@ -331,7 +331,7 @@ Fork-and-stick requires no gossip infrastructure and no third-party auditor to b
 purely client-local rule. It is the primary defense against split-view equivocation, chosen deliberately
 over relying on emergent peer gossip, which real transparency-log deployments show does not materialize
 organically even when specified (Certificate Transparency's gossip layer was specified in 2013 and has
-never been deployed at scale) [CT-GOSSIP]. Where a log additionally has witness cosigners (§5.3, §8.2),
+never been deployed at scale) [CT-GOSSIP]. Where a log additionally has witness cosigners (§5.6, §8.2),
 witness cosigning and fork-and-stick compose as two independent layers of the same defense.
 
 ### 3.5 Enrollment and revocation state machine
@@ -1438,9 +1438,9 @@ disputed ───────────────────────�
   Correction), which exists precisely because a binary active/retracted flag forces reviewers into an
   all-or-nothing cliff that real epistemic uncertainty doesn't fit `[CROSSREF]`.
 - **retracted** — reached either by external adjudication quorum convicting (forced) or by the endorsers
-  self-initiating (self). **Endorsers take a reputation penalty**, reusing §6.2's staking-loss machinery:
-  (Parameter: `BEACON_RETRACT_PENALTY`, default 0.25 (reuses §6.2's `P_dir`), status: deployment-tunable,
-  evidence: reuse of §6.2 calibration, no independent Beacon-specific sim).
+  self-initiating (self). **Endorsers take a reputation penalty**, reusing §6.6's staking-loss machinery:
+  (Parameter: `BEACON_RETRACT_PENALTY`, default 0.25 (reuses §6.6's `P_dir`), status: deployment-tunable,
+  evidence: reuse of §6.6 calibration, no independent Beacon-specific sim).
 - **reaffirmed** — the dispute's adjudication quorum dismisses it, or the appeal window (§6) passes
   unexercised. No penalty; the publication's status history nonetheless permanently records that it was
   challenged and survived — this is itself a positive signal a reader can see (§8.7).
@@ -1495,7 +1495,7 @@ rule as §6's penalty-timing semantics (the Advogato fix), applied here for the 
 recomputed against a moving reputation value is neither auditable nor fair.
 
 **Propagation.** The retraction penalty applies to **direct endorsers only**; it does not propagate up the
-*vouch* chain (contrast §6.2, which does propagate a conviction penalty up the voucher chain). Endorsing is an
+*vouch* chain (contrast §6.6, which does propagate a conviction penalty up the voucher chain). Endorsing is an
 individual epistemic act distinct from vouching for a person's conduct; propagating a publication penalty up
 the vouch chain would chill vouching for reasons unrelated to conduct, which is a different failure mode than
 the one the vouch-chain penalty is designed to deter.
@@ -2354,7 +2354,7 @@ MUST-level obligations for that role; the section references are normative.
 ### 13.1 Client
 
 A conforming Client MUST: maintain the device log and monitor its own entries (§3); enforce
-fork-and-stick on every log it consumes (§3.5); verify checkpoint inclusion proofs for its own
+fork-and-stick on every log it consumes (§3.4); verify checkpoint inclusion proofs for its own
 reputation entry and raise disputes on mismatch (§5); enforce voucher-independence checks before
 co-signing a vouch (§4); compute penalties deterministically from the conviction checkpoint snapshot
 (§6); spend Sparks only with fresh epoch-scoped state and never reuse presentation state (§7); refuse
@@ -2383,7 +2383,7 @@ freshness bound (§8). Mirrors MAY be anonymous; they hold no keys.
 
 A conforming Witness MUST verify that each submitted log head extends the last head it cosigned
 (consistency proof), cosign within its stated availability window, retain its cosignature history, and
-refuse to cosign two heads at the same log position (§5.4). A witness that observes a fork MUST publish
+refuse to cosign two heads at the same log position (§5.6). A witness that observes a fork MUST publish
 both conflicting heads.
 
 ### 13.5 Reader / Verifier
@@ -2409,20 +2409,20 @@ Each row names the adversary, the verdict, and the load-bearing mechanism. Verdi
 | 4 | Careless / colluding voucher | Bounded (calibrated for the hard-block variant; escalation form unvalidated — Appendix A.5) | Staked vouching, transitive penalty (§6); voucher independence (§4) |
 | 5 | Sybil farm via duped vouchers | Bounded | ≥2 independent Member+ vouchers, issuance budget, connectivity discount (§4); penalty craters duped vouchers (§6); Appendix A.5 |
 | 6 | Tight collusion cluster (letter-of-the-law vouches) | Bounded (new in v5) | Voucher-independence rule + connectivity discount Appendix A.5; MeritRank-derived. Appendix A.5 measured the hard-block variant; the shipped escalation form + neighborhood cap awaits its own sim |
-| 7 | Identity split (one human, two roots) | Bounded | Sybilproofness asymmetry (§4.8): per-identity admission cost, absolute tiers, non-superadditive Spark curve Appendix A.7 |
+| 7 | Identity split (one human, two roots) | Bounded | Sybilproofness asymmetry (§4.12): per-identity admission cost, absolute tiers, non-superadditive Spark curve Appendix A.7 |
 | 8 | Identity rental post-admission | Accepted risk | Admission-time verification only; holder-binding credentials raise the bar (§3, §7); continuous re-verification rejected by design |
 | 9 | Infiltrator who defects | Bounded | Quorum conviction; damage window ~weeks for private abuse (§6, Appendix A); rate caps |
 | 10 | Tribe-capture wrongful conviction | Partial | q=0.25 needs ~20% control; per-complainant cap; cross-tribe appeal Appendix A.8; small-tribe rule Appendix A.9 protects N < 12 only. N = 12–20 wrongfully convicts 81–92% at 30–33% capture (§6.3 review correction) |
 | 11 | Retaliatory complaints | Bounded (new in v5) | Retaliation discount (§6); quorum still required |
 | 12 | Complaint spam / adjudication DoS | Bounded | Per-member per-epoch complaint rate limits (§6) |
 | 13 | Malicious Steward subset forging checkpoints | Mitigated, contingent on witness participation (zero-witness tribes: fork-and-stick only — §5.6) | Majority-threshold signatures; member self-monitoring; witness cosigning; fork-and-stick (§5) |
-| 14 | Steward-set equivocation (split view) | Mitigated | Witness cosigning from bridge partners + fork-and-stick (§5.4); CT gossip lesson applied |
+| 14 | Steward-set equivocation (split view) | Mitigated | Witness cosigning from bridge partners + fork-and-stick (§5.6, §3.4); CT gossip lesson applied |
 | 15 | Steward governance fork / seal re-keying | Bounded (new in v5) | Schism semantics: new lineage, empty citation history (§15.4) |
 | 16 | Sequencer Steward censoring/reordering MLS commits | Bounded | Rotation triggers + liveness failover + countersigned epoch advance (§10); a hub exists — named tradeoff, DMLS tracked; fairness SLA + signed submission receipts make selective delay provable (§10.2.1) |
 | 17 | Recipient / single relay tracing a distributor | Mitigated | Identity-free Sparks + onion routing (§7) |
-| 18 | Single well-placed Steward doing traffic analysis | Accepted risk (named in v5) | Timing/size correlation on relayed traffic is feasible; padding raises the bar only (§7.6) |
-| 19 | Global passive traffic correlation | Out of scope | Stated non-goal; mixnet-class transport named for async escalation — bare Tor claim removed (§7.6) |
-| 20 | Spark double-spend via gossip lag | Accepted (bounded) | Eventually-consistent epoch-scoped nullifiers; rare double-accept is low-stakes by design (§7.4) |
+| 18 | Single well-placed Steward doing traffic analysis | Accepted risk (named in v5) | Timing/size correlation on relayed traffic is feasible; padding raises the bar only (§7.8) |
+| 19 | Global passive traffic correlation | Out of scope | Stated non-goal; mixnet-class transport named for async escalation — bare Tor claim removed (§7.8) |
+| 20 | Spark double-spend via gossip lag | Accepted (bounded) | Eventually-consistent epoch-scoped nullifiers; rare double-accept is low-stakes by design (§7.5) |
 | 21 | Device theft / identity hijack | Bounded | Device subkeys + revocation + probation + threshold root + gated recovery (§3) |
 | 22 | Malicious social recovery | Bounded | M-of-N guardians + time-lock + all-device notification + veto window (§3) |
 | 23 | DHT enumeration / presence tracking | Bounded (new in v5) | Short-TTL hints + per-epoch rotating hint keys (§11); residual risk stated |
@@ -2571,7 +2571,7 @@ daily steps, 120–400 seeds/cell) for A.1–A.4, and `hearth_v5_sim.py` (result
 pure stdlib, 100–200 seeds/cell) for A.5–A.9. As with Appendix C: a model, not a proof — relative
 comparisons across parameters are the signal, not absolute numbers.
 
-**A.1 Decay half-life:** idle-retention table in §3.3 — H=90 balances bad-actor freshness against punishing intermittent honest users.
+**A.1 Decay half-life:** idle-retention table in §5.3 — H=90 balances bad-actor freshness against punishing intermittent honest users.
 **A.2 Penalty gradient:** P_dir=0.25, g=0.35 → meaningful collateral ~3 hops; g is a pure spread knob (direct loss unchanged 0→0.7).
 **A.3 Fraction quorum:** q=0.25 → 0% wrongful below 15% capture, reliable legitimate conviction up to q=0.30.
 **A.4 Sybil farm:** ~14 days to Member tier from zero; bounded by issuance budget B=2/epoch.
