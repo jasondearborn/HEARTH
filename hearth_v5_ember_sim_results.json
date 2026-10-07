@@ -1,0 +1,796 @@
+{
+  "meta": {
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "smoke": false,
+    "assumed": {
+      "DEFAULT_BUDGETS": {
+        "Member": 3,
+        "Trusted": 5,
+        "Steward": 8
+      },
+      "init_rep": 0.5,
+      "p_proximity": 0.3,
+      "activity_mix": "50% 0.9 / 30% 0.5 / 20% 0.15"
+    },
+    "spec": "HEARTH v5 \u00a75.2, review 2026-10-07",
+    "python": "3.12.3",
+    "runtime_s": 26.484439849853516
+  },
+  "E1_pair_curve": [
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interval_days": 1,
+      "per_day": 1.4693679385278594e-39,
+      "equilibrium": 1.915221124469871e-37
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interval_days": 3,
+      "per_day": 7.58291207603179e-14,
+      "equilibrium": 9.883809910514399e-12
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interval_days": 7,
+      "per_day": 5.45501708984375e-07,
+      "equilibrium": 7.110243589008882e-05
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interval_days": 14,
+      "per_day": 0.000279296875,
+      "equilibrium": 0.036404447175725475
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interval_days": 30,
+      "per_day": 0.0041875,
+      "equilibrium": 0.5458121310822058
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interval_days": 60,
+      "per_day": 0.00825,
+      "equilibrium": 1.0753313627291219
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interval_days": 89,
+      "per_day": 0.0055,
+      "equilibrium": 0.7168875751527478
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interval_days": 92,
+      "per_day": 0.011,
+      "equilibrium": 1.4337751503054956
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interval_days": 120,
+      "per_day": 0.0085,
+      "equilibrium": 1.1079171615997014
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interval_days": 180,
+      "per_day": 0.0055,
+      "equilibrium": 0.7168875751527478
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interval_days": 1,
+      "per_day": 1.9073486328125e-06,
+      "equilibrium": 0.0002486099156996113
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interval_days": 3,
+      "per_day": 0.0052109375,
+      "equilibrium": 0.6792102452086405
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interval_days": 7,
+      "per_day": 0.03575,
+      "equilibrium": 4.659769238492861
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interval_days": 14,
+      "per_day": 0.0715,
+      "equilibrium": 9.319538476985722
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interval_days": 30,
+      "per_day": 0.0335,
+      "equilibrium": 4.366497048657647
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interval_days": 60,
+      "per_day": 0.0165,
+      "equilibrium": 2.1506627254582438
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interval_days": 89,
+      "per_day": 0.011,
+      "equilibrium": 1.4337751503054956
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interval_days": 92,
+      "per_day": 0.011,
+      "equilibrium": 1.4337751503054956
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interval_days": 120,
+      "per_day": 0.0085,
+      "equilibrium": 1.1079171615997014
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interval_days": 180,
+      "per_day": 0.0055,
+      "equilibrium": 0.7168875751527478
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interval_days": 1,
+      "per_day": 1.1582943646753414e-39,
+      "equilibrium": 1.5097578880094514e-37
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interval_days": 3,
+      "per_day": 4.4075469764622524e-14,
+      "equilibrium": 5.744937571505181e-12
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interval_days": 7,
+      "per_day": 5.25669239481685e-07,
+      "equilibrium": 6.851740844080259e-05
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interval_days": 14,
+      "per_day": 0.00016226455941903843,
+      "equilibrium": 0.0211500811882079
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interval_days": 30,
+      "per_day": 0.002327477371129117,
+      "equilibrium": 0.30337083796575365
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interval_days": 60,
+      "per_day": 0.005069978946660328,
+      "equilibrium": 0.6608372569357829
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interval_days": 89,
+      "per_day": 0.005440911694700166,
+      "equilibrium": 0.7091858166243328
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interval_days": 92,
+      "per_day": 0.00561599590971866,
+      "equilibrium": 0.7320068526883565
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interval_days": 120,
+      "per_day": 0.0053870660864445315,
+      "equilibrium": 0.7021674079816043
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interval_days": 180,
+      "per_day": 0.004365352900199555,
+      "equilibrium": 0.5689940464200135
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 14,
+      "interval_days": 1,
+      "per_day": 1.172601078979217e-06,
+      "equilibrium": 0.00015284057166016485
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 14,
+      "interval_days": 3,
+      "per_day": 0.004397223960930367,
+      "equilibrium": 0.5731482223190786
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 14,
+      "interval_days": 7,
+      "per_day": 0.02682781724812361,
+      "equilibrium": 3.496823427936073
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 14,
+      "interval_days": 14,
+      "per_day": 0.035750000000000004,
+      "equilibrium": 4.659769238492862
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 14,
+      "interval_days": 30,
+      "per_day": 0.027348310868054875,
+      "equilibrium": 3.5646662295860727
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 14,
+      "interval_days": 60,
+      "per_day": 0.015893361515758066,
+      "equilibrium": 2.0715915269196
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 14,
+      "interval_days": 89,
+      "per_day": 0.010906243713769592,
+      "equilibrium": 1.4215546563616694
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 14,
+      "interval_days": 92,
+      "per_day": 0.010919274030264837,
+      "equilibrium": 1.4232530694518057
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 14,
+      "interval_days": 120,
+      "per_day": 0.008484485643164888,
+      "equilibrium": 1.1058949707539598
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 14,
+      "interval_days": 180,
+      "per_day": 0.005499486144818427,
+      "equilibrium": 0.7168205976263665
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interval_days": 1,
+      "per_day": 0.007672053838463892,
+      "equilibrium": 1.0000000132177658
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interval_days": 3,
+      "per_day": 0.007617150626270202,
+      "equilibrium": 0.9928437530981964
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interval_days": 7,
+      "per_day": 0.007505210977826028,
+      "equilibrium": 0.9782531816188155
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interval_days": 14,
+      "per_day": 0.007308259258169802,
+      "equilibrium": 0.9525818651230853
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interval_days": 30,
+      "per_day": 0.006911032454629765,
+      "equilibrium": 0.9008060542184501
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interval_days": 60,
+      "per_day": 0.006105651385675504,
+      "equilibrium": 0.7958301121099868
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interval_days": 89,
+      "per_day": 0.0054574775051585795,
+      "equilibrium": 0.7113450572952368
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interval_days": 92,
+      "per_day": 0.005584068900684102,
+      "equilibrium": 0.7278453843085994
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interval_days": 120,
+      "per_day": 0.005126772794369881,
+      "equilibrium": 0.6682399485299821
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interval_days": 180,
+      "per_day": 0.00412500000745057,
+      "equilibrium": 0.537665682335692
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 14,
+      "interval_days": 1,
+      "per_day": 0.04830484698938141,
+      "equilibrium": 6.296208113880391
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 14,
+      "interval_days": 3,
+      "per_day": 0.04603206411413265,
+      "equilibrium": 5.9999663312829785
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 14,
+      "interval_days": 7,
+      "per_day": 0.04188373029032363,
+      "equilibrium": 5.459259244760328
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 14,
+      "interval_days": 14,
+      "per_day": 0.035750000000000004,
+      "equilibrium": 4.659769238492862
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 14,
+      "interval_days": 30,
+      "per_day": 0.025914564311789765,
+      "equilibrium": 3.3777871219307096
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 14,
+      "interval_days": 60,
+      "per_day": 0.015654029164117116,
+      "equilibrium": 2.040396183424421
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 14,
+      "interval_days": 89,
+      "per_day": 0.010865815609316981,
+      "equilibrium": 1.4162851280400233
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 14,
+      "interval_days": 92,
+      "per_day": 0.01088433670219566,
+      "equilibrium": 1.4186992264696552
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 14,
+      "interval_days": 120,
+      "per_day": 0.008477655953833254,
+      "equilibrium": 1.105004767222323
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 14,
+      "interval_days": 180,
+      "per_day": 0.005499258728964208,
+      "equilibrium": 0.7167909555172243
+    }
+  ],
+  "E2_honest_tribe": [
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interaction_rate": 0.25,
+      "median_steady_mean": 10.927878793652287,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interaction_rate": 0.5,
+      "median_steady_mean": 8.280879145516936,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interaction_rate": 1.0,
+      "median_steady_mean": 4.4824614390221065,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interaction_rate": 2.0,
+      "median_steady_mean": 2.0701591931648022,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.043333333333333335,
+        "Trusted": 0.055,
+        "Steward": 0.9016666666666666
+      }
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "interaction_rate": 1.0,
+      "calibrated_base_unit": 0.23584738918549317,
+      "median_steady_mean": 0.9984407931167136,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.024999999999999998,
+        "Trusted": 0.20666666666666667,
+        "Steward": 0.7683333333333333
+      }
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interaction_rate": 0.25,
+      "median_steady_mean": 22.796084873993728,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interaction_rate": 0.5,
+      "median_steady_mean": 41.159916533736464,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interaction_rate": 1.0,
+      "median_steady_mean": 63.10417904051846,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interaction_rate": 2.0,
+      "median_steady_mean": 65.54212838018626,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "interaction_rate": 1.0,
+      "calibrated_base_unit": 0.016311643126445993,
+      "median_steady_mean": 1.0137898457212011,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.06166666666666667,
+        "Steward": 0.9383333333333334
+      }
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interaction_rate": 0.25,
+      "median_steady_mean": 7.814376321728243,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interaction_rate": 0.5,
+      "median_steady_mean": 5.836162417936841,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interaction_rate": 1.0,
+      "median_steady_mean": 3.105815247343938,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0016666666666666666,
+        "Steward": 0.9983333333333333
+      }
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interaction_rate": 2.0,
+      "median_steady_mean": 1.486654582465374,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.07166666666666667,
+        "Trusted": 0.095,
+        "Steward": 0.8333333333333334
+      }
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "interaction_rate": 1.0,
+      "calibrated_base_unit": 0.33919160809099114,
+      "median_steady_mean": 1.0069138997564704,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.021666666666666667,
+        "Trusted": 0.20666666666666667,
+        "Steward": 0.7716666666666667
+      }
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interaction_rate": 0.25,
+      "median_steady_mean": 9.271645565016534,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interaction_rate": 0.5,
+      "median_steady_mean": 11.19559628492394,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interaction_rate": 1.0,
+      "median_steady_mean": 12.645038012791948,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interaction_rate": 2.0,
+      "median_steady_mean": 13.492803524780129,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.0,
+        "Steward": 1.0
+      }
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "interaction_rate": 1.0,
+      "calibrated_base_unit": 0.0785029571917874,
+      "median_steady_mean": 0.9923874703176716,
+      "frac_tiers_mean": {
+        "Stranger": 0.0,
+        "Member": 0.0,
+        "Trusted": 0.021666666666666667,
+        "Steward": 0.9783333333333333
+      }
+    }
+  ],
+  "E3_colluding_pair": [
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "issuer_tier": "Member",
+      "budget": 3,
+      "per_day": 2.7758738845639913e-117,
+      "equilibrium": 3.618162723699852e-115
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "issuer_tier": "Trusted",
+      "budget": 5,
+      "per_day": 9.953040500868236e-195,
+      "equilibrium": 1.2973111036480947e-192
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 90,
+      "issuer_tier": "Steward",
+      "budget": 8,
+      "per_day": 2.1644357067846e-311,
+      "equilibrium": 2.82119466438331e-309
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "issuer_tier": "Member",
+      "budget": 3,
+      "per_day": 3.0357660829594124e-18,
+      "equilibrium": 3.9569145198976887e-16
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "issuer_tier": "Trusted",
+      "budget": 5,
+      "per_day": 9.170508023194262e-30,
+      "equilibrium": 1.1953133199393734e-27
+    },
+    {
+      "variant": "floor",
+      "counter_half_life": 14,
+      "issuer_tier": "Steward",
+      "budget": 8,
+      "per_day": 2.1809760034352316e-47,
+      "equilibrium": 2.842753815580026e-45
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "issuer_tier": "Member",
+      "budget": 3,
+      "per_day": 2.7195364181853038e-117,
+      "equilibrium": 3.544730669768094e-115
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "issuer_tier": "Trusted",
+      "budget": 5,
+      "per_day": 6.059372999675902e-195,
+      "equilibrium": 7.897980393970344e-193
+    },
+    {
+      "variant": "smooth",
+      "counter_half_life": 90,
+      "issuer_tier": "Steward",
+      "budget": 8,
+      "per_day": 1.2909569322026e-311,
+      "equilibrium": 1.682674517733374e-309
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "issuer_tier": "Member",
+      "budget": 3,
+      "per_day": 0.00769175798795216,
+      "equilibrium": 1.0025683150263278
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "issuer_tier": "Trusted",
+      "budget": 5,
+      "per_day": 0.011543560408673865,
+      "equilibrium": 1.504624550909722
+    },
+    {
+      "variant": "hyperbolic",
+      "counter_half_life": 90,
+      "issuer_tier": "Steward",
+      "budget": 8,
+      "per_day": 0.015395858827610284,
+      "equilibrium": 2.0067454367853754
+    }
+  ]
+}
