@@ -61,6 +61,7 @@ say "accepted risk" out loud.
 | The full normative spec (v5, current) | [HEARTH-protocol-spec-v5.md](HEARTH-protocol-spec-v5.md) |
 | Why not just use Signal / Bluesky / BrightID / Sigstore…? | [HEARTH-prior-art.md](HEARTH-prior-art.md) |
 | What HEARTH could be used for (exploratory) | [HEARTH-use-cases.md](HEARTH-use-cases.md) |
+| Critical review of v5 (2026-10-07): findings and dispositions | [HEARTH-v5-review.md](HEARTH-v5-review.md) |
 | The simulations behind the numbers | [hearth_v5_sim.py](hearth_v5_sim.py), [hearth_v3_sim.py](hearth_v3_sim.py), [hearth_federation_sim.py](hearth_federation_sim.py) + results JSONs |
 | How the design evolved (and what it got wrong) | [HEARTH-v1-critique.md](HEARTH-v1-critique.md), then spec v1 → v4 |
 
