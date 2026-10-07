@@ -2412,7 +2412,7 @@ Each row names the adversary, the verdict, and the load-bearing mechanism. Verdi
 | 7 | Identity split (one human, two roots) | Bounded | Sybilproofness asymmetry (§4.8): per-identity admission cost, absolute tiers, non-superadditive Spark curve Appendix A.7 |
 | 8 | Identity rental post-admission | Accepted risk | Admission-time verification only; holder-binding credentials raise the bar (§3, §7); continuous re-verification rejected by design |
 | 9 | Infiltrator who defects | Bounded | Quorum conviction; damage window ~weeks for private abuse (§6, Appendix A); rate caps |
-| 10 | Tribe-capture wrongful conviction | Partial | q=0.25 needs ~20% control; per-complainant cap; cross-tribe appeal Appendix A.8; small-tribe rule Appendix A.9 |
+| 10 | Tribe-capture wrongful conviction | Partial | q=0.25 needs ~20% control; per-complainant cap; cross-tribe appeal Appendix A.8; small-tribe rule Appendix A.9 protects N < 12 only. N = 12–20 wrongfully convicts 81–92% at 30–33% capture (§6.3 review correction) |
 | 11 | Retaliatory complaints | Bounded (new in v5) | Retaliation discount (§6); quorum still required |
 | 12 | Complaint spam / adjudication DoS | Bounded | Per-member per-epoch complaint rate limits (§6) |
 | 13 | Malicious Steward subset forging checkpoints | Mitigated, contingent on witness participation (zero-witness tribes: fork-and-stick only — §5.6) | Majority-threshold signatures; member self-monitoring; witness cosigning; fork-and-stick (§5) |
@@ -2432,18 +2432,28 @@ Each row names the adversary, the verdict, and the load-bearing mechanism. Verdi
 | 27 | Stale "not retracted" served by mirror | Mitigated (new in v5) | ≥2-mirror/witness cross-check + freshness bound in the MUST verification sequence (§8.7) |
 | 28 | Inter-tribe brigading / dispute weaponization | Partial | Quorum-gated, staked, rate-limited, fast-decaying disputes + mandatory rationale (§9); industry-unsolved (Bluesky) — tracked §16 |
 | 29 | Off-protocol retaliation against disputers | Accepted risk (named in v5) | Staking cannot reach off-protocol harassment (Playvicious precedent) |
-| 30 | Citation ring / sybil tribe | Mitigated | Vantage-bounded composite: rings outside the reader's vantage = unrated (Appendix C.1); overlap discount |
-| 31 | Lure into low-standing malicious tribe | Mitigated | Coverage floor (0% lure success at 0.25) + single-source display rule (§9, Appendix C.6) |
+| 30 | Citation ring / sybil tribe | Mitigated (by construction of the formula, not by simulation) | Vantage-bounded composite: rings outside the reader's vantage = unrated (Appendix C.1, review note). The overlap-discount claim was withdrawn in review: no mechanism exists for citations |
+| 31 | Lure into low-standing malicious tribe | Partial (downgraded in review) | Coverage floor + single-source display rule (§9.4). S5's "0% at 0.25" is structural: lure weight was capped at exactly the floor. Attacker-chosen weight is untested (Appendix C.6 correction) |
 | 32 | Federation as captured truth authority | N/A by design | No global score, no anchor set; client-side composite (§9) |
 | 33 | Echo-chamber epistemics | Accepted by design | Decomposition + optional neutral vantage; the protocol will not assert truth (§9) |
 | 34 | Endpoint compromise (rooted device) | Partial | At-rest encryption, ratchets, revocation; no protocol fixes a rooted endpoint |
 | 35 | Harvest-now-decrypt-later (quantum) | Partial | Hybrid ML-KEM for transport now; PQ roots via rotation; PQ anonymous credentials deferred with evidence (§3.9, §16) |
+| 36 | Colluding Steward **majority** issuing a self-consistent false checkpoint | Partial (added in review) | Witnesses verify extension, not content (§5.9). Defences are member self-monitoring + transcript-backed disputes (§5.5.3). Independent re-derivation by witnesses is future work |
+| 37 | Colluding voucher + vouchee bypassing proximity | Accepted risk (added in review) | Proximity is not verifiable by third parties (§4.4). Stake and transitive penalty (§6.6) carry the defence |
+| 38 | Quorum gaming by changing N (admit one member at N = 11 to drop quorum 6 → 3) | Bounded (added in review) | Quorum evaluated at the N of the case-open checkpoint (§6.3). Admitting *before* opening a case still works. Smooth quorum curve is open (§16) |
+| 39 | Appeal-venue grinding by the convicting faction | Partial (added in review) | Canonical conviction record (§6.7). A faction with more colluders than quorum can still choose among C(c, Q) seeds. External seed contribution is open (§16) |
+| 40 | Checkpoint-dispute freeze (dispute own leaf repeatedly to stop witnessing) | Bounded | One open dispute, transcript rebuttal, abuse throttle (§5.5.3) |
+| 41 | Roster disclosure through mirrored checkpoints | Mitigated (added in review) | Private leaf labels and tribe-internal leaf distribution; only heads are public (§5.5) |
+| 42 | Spark issuer-key partitioning to deanonymize members | Mitigated (added in review) | Issuer keys committed in the witnessed checkpoint log; client key-consistency check (§7.2) |
+| 43 | Counter-dispute muting a genuine Federation dispute (both sides damped ×0.4) | Accepted risk (named in review) | Blanket mutual damping (§9.6) has no retaliation discount. Open (§16) |
+| 44 | Stewards observing the intra-tribe interaction graph | Accepted risk (named in review) | Inherent to Steward-computed checkpoints (§5.9). Private aggregation is future work |
 
 ### 14.1 Reading the table honestly (non-normative)
 
-Five rows are *Accepted risk* on purpose. A spec that claims to mitigate identity rental, single-relay
-traffic analysis, off-protocol harassment, occasional nullifier lag, or its own epistemic bubbles would
-be lying, and a reader who catches one lie discounts every other row. The table is the contract: each
+Eight rows are *Accepted risk* on purpose (three added in the 2026-10-07 review). A spec that claims to
+mitigate identity rental, single-relay traffic analysis, off-protocol harassment, occasional nullifier lag,
+its own epistemic bubbles, colluding-voucher proximity fraud, counter-dispute muting, or Steward visibility
+into the interaction graph would be lying, and a reader who catches one lie discounts every other row. The table is the contract: each
 Bounded/Partial row cites the mechanism that does the bounding and, where it exists, the simulation
 that measured it.
 
@@ -2521,6 +2531,33 @@ asserts nothing about these beyond what is written here.
    form is a post-simulation amendment whose own trade needs a follow-up sim before "validated" applies.
 7. **Brigading via dispute signals.** Quorum + staking + rationale narrow the surface, but the failure
    mode is unsolved industry-wide (Bluesky's open issue [BSKY-19]); monitor and revisit.
+
+**Added by the 2026-10-07 critical review** (`HEARTH-v5-review.md` holds the full finding list):
+
+8. **S2 must implement §5.2.** The equilibrium of the real Ember mechanics, and whether anyone reaches
+   Steward-eligible (and so whether Steward succession is sustainable), is unmeasured (§5.2.6 correction).
+9. **Weighted conviction gate.** §6.2/§6.4 refer to a weighted total that was never defined. Conviction is
+   count-only until a weighted threshold is specified and simulated (§6.3).
+10. **Quorum curve for N = 12–24.** The shipped standard rule wrongfully convicts 81–92% at 30–33% capture
+    in that band, and the 11→12 step is gameable (§6.3). Candidate: smooth q(N) from 0.5 to 0.25. Needs an
+    S6 extension.
+11. **Kin stake vs. penalty cap.** Decide whether `PENALTY_CAP_PER_INCIDENT` exempts kin-admission stake,
+    which it currently clips above 1.2× (§4.5).
+12. **Appeal seed.** Add a seed contribution the convicting tribe cannot influence (§6.7). Define what case
+    evidence appeal tribes see and how it is protected.
+13. **Steward election and resharing authorization** (§15.3), plus the out-of-band fork-resolution process
+    that clears fork-and-stick (§3.4). Both are referenced and undefined.
+14. **Federation interoperability.** Specify a normative rᵢ(T) derivation with test vectors (§9.4), and a
+    retaliation discount for Federation counter-disputes (C.7). Re-run S5 with attacker-chosen lure weight
+    (C.6) and with the shipped single-source display rule.
+15. **Sparks redesign.** The SPARK-BBS-1 composition is withdrawn (§7.3). Choose BBS + pseudonyms + range
+    proof, or ARC with threshold-MAC issuance. Fix budget/epoch/registry window alignment (credentials valid
+    3 epochs, registry kept 2).
+16. **Device-log freshness and witnesses.** A relay can serve a stale device log that omits a revocation.
+    Add a signed head age bound and consider witnesses (§3.5).
+17. **Transport and session specification.** Noise pattern/prologue/binding, Double Ratchet initial
+    agreement (X3DH/PQXDH), and suite identifiers (§12.3). These are a prerequisite for the encoding
+    specification (item 5).
 
 Resolution process: an open question graduates only via a published RFC citing either simulation
 results (Appendix A/B extension) or deployment evidence, through the §15.2 electorate.
@@ -2893,13 +2930,13 @@ are as defined in §0.2.
 | `DORMANCY_ROLLING_WINDOW` | 365 days | sim-backed | Appendix A.6 | §4.10 |
 | `DORMANCY_COOLDOWN` | 60 days | sim-backed | Appendix A.6 (zero dormancy vouch-leaks across every seed/chill level) | §4.10 |
 | `DORMANCY_PROBATION` | 14 days | provisional | none — mirrors §3.5's device-probation pattern | §4.10 |
-| `B_E(Member)` / `B_E(Trusted)` / `B_E(Steward-eligible)` | per-tier, deployment-set | provisional | Appendix A.6 (S2), exercised as defaults | §5.2.1 |
-| `δ` | 0.5 | provisional | Appendix A.6 (S2), exercised as default | §5.2.2 |
-| `tier_multiplier(Member)` | 1.0 | provisional | Appendix A.6 (S2), exercised as default | §5.2.3 |
-| `tier_multiplier(Trusted)` | 1.5 | provisional | Appendix A.6 (S2), exercised as default | §5.2.3 |
-| `tier_multiplier(Steward-eligible)` | 2.0 | provisional | Appendix A.6 (S2), exercised as default | §5.2.3 |
-| `PROXIMITY_MULTIPLIER` | 1.0 | provisional | Appendix A.6 (S2), exercised as default | §5.2.4 |
-| `REMOTE_MULTIPLIER` | 0.4 | provisional | Appendix A.6 (S2), exercised as default | §5.2.4 |
+| `B_E(Member)` / `B_E(Trusted)` / `B_E(Steward-eligible)` | per-tier, deployment-set (committed via `policy_hash`) | provisional | none — S2 does not model §5.2 (review correction) | §5.2.1 |
+| `δ` | 0.5 | provisional | none — S2 does not model §5.2 (review correction) | §5.2.2 |
+| `tier_multiplier(Member)` | 1.0 | provisional | none — S2 does not model §5.2 (review correction) | §5.2.3 |
+| `tier_multiplier(Trusted)` | 1.5 | provisional | none — S2 does not model §5.2 (review correction) | §5.2.3 |
+| `tier_multiplier(Steward-eligible)` | 2.0 | provisional | none — S2 does not model §5.2 (review correction) | §5.2.3 |
+| `PROXIMITY_MULTIPLIER` | 1.0 | provisional | none — S2 does not model §5.2 (review correction) | §5.2.4 |
+| `REMOTE_MULTIPLIER` | 0.4 | provisional | none — S2 does not model §5.2 (review correction) | §5.2.4 |
 | `H` | 90 days | sim-backed | Appendix A.1 | §5.3 |
 | `CHECKPOINT_DISPUTE_WINDOW` | 3 epochs | provisional | none | §5.5.3 |
 | `DISPUTE_ABUSE_THRESHOLD` | 3 rebuttals / 90 epochs → 30-epoch suspension | provisional | none | §5.5.3 |
@@ -2928,7 +2965,7 @@ are as defined in §0.2.
 | `BEACON_STATUS_FRESHNESS` | 1 epoch (24 h) | provisional | — | §8.7 |
 | `CITATION_HALFLIFE` | 365 days | deployment-tunable | v4 §7.1, qualitative | §9.2 |
 | `DISPUTE_HALFLIFE` | 90 days (reuses Ember decay half-life) | provisional | qualitative, no independent sim | §9.3 |
-| `COMPOSITE_COVERAGE_FLOOR` | 0.25 | sim-backed | Appendix C.6 (S5) | §9.4 |
+| `COMPOSITE_COVERAGE_FLOOR` | 0.25 | provisional (downgraded in review) | Appendix C.6 (S5) — structural result, see correction | §9.4 |
 | `MLS_SEQUENCER_ROTATION_PERIOD` | 1 protocol epoch | provisional | — | §10.2.1 |
 | `MLS_SEQUENCER_LIVENESS_TIMEOUT` | small multiple of expected RTT | deployment-tunable | — | §10.2.1 |
 | `MLS_FAIRNESS_MULTIPLE` | 3× median sequencing latency | provisional | none | §10.2.1 |
@@ -2941,6 +2978,13 @@ are as defined in §0.2.
 | `RELAY_FRACTION_PLANNING` | 10–30% of connections | provisional | [IROH], [LIBP2P-DCUTR] — external benchmark, not a HEARTH-specific sim | §11.3 |
 | `RELAY_BUDGET_BY_TIER` | function of tier (deployment-set) | deployment-tunable | none — capacity-planning knob, not a security parameter | §11.4 |
 | `STEWARD_TERM` | 180 days | deployment-tunable | none | §15.3 |
+| `LINKAGE_INITIAL` | 1.0 | provisional | none (added in review) | §4.3 |
+| `KIN_REPEAT_WINDOW` | 365 epochs | provisional | none (added in review) | §4.5 |
+| `BRIDGE_PROOF_MAX_AGE` | 7 epochs | provisional | none (added in review) | §4.9 |
+| `REP_SCALE` | 10⁶ (fixed-point) | provisional | none (added in review) | §5.1 |
+| `MIN_STEWARDS` | 3 | provisional | none (added in review) | §15.3 |
+| `CARETAKER_GRACE` | 7 epochs | provisional | none (added in review) | §15.3 |
+| `OPINION_EPSILON` | 0.01 | provisional | none (added in review) | §9.4 |
 
 **Consistency check.** No parameter in this draft was found tagged with mutually-inconsistent defaults or
 status labels across different sections. A handful of values are *reused by reference* rather than
