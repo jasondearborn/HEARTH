@@ -3017,6 +3017,13 @@ future change to the base parameter propagates correctly.
   seven new simulations S1–S7 (Appendices A.5–A.9, C.6–C.7), two of which overturned a locked draft decision
   (S1, S5) and one of which was deferred rather than shipped (S7); and one honest correction (the bare-Tor
   claim against a global passive adversary, withdrawn in §7.8).
+- **v5, review revision (2026-10-07)** — critical review, edited in place (v5 not frozen); full record in
+  `HEARTH-v5-review.md`. Four simulation interpretations were corrected and their numbers kept: S2 does not
+  model §5.2, S5's lure result is structural, S6's "0% at N ≥ 12" was misattributed, and S7 is analytic.
+  Interoperability gaps were pinned down: penalty decay and fixed-point arithmetic, k(m), the conviction
+  gate, the appeal draw, checkpoint leaves and `policy_hash`. Security fixes: the Spark tag, issuer-key
+  consistency, Beacon status completeness, per-operation device authorization, MLS admission per RFC 9420,
+  and the presence-hint secret. Also: threat rows 36–44 and §16 items 8–17.
 
 ---
 
