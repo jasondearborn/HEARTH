@@ -365,6 +365,22 @@ A device certificate's `status` field MUST transition only along this state mach
   local Argon2id-protected at-rest store (§12.1) — never the root key material, never the ability to
   author a valid `Update` unilaterally (unless the identity has configured a single-device authorization
   policy, which is NOT RECOMMENDED and MUST be flagged to the user as reduced security).
+- **Authorization per operation (normative, added in review 2026-10-07).** The bullets above contradict
+  each other: enrollment lets "an existing active device" sign alone, while the containment invariant
+  forbids a single device authoring an Update. Neither "the identity's authorization policy" nor
+  §3.4 (which is fork-and-stick) defines the policy. Until a fuller policy language exists (§16), the
+  following minimum holds for any identity with ≥ 2 active devices:
+
+  | Operation | Minimum authorization |
+  |---|---|
+  | ADD_DEVICE | root signature, or ≥ 2 active devices. A single active device MAY add a device only if it is the identity's sole active device; the new device then serves the full probation |
+  | REVOKE_DEVICE (another device) | root signature, a device quorum (≥ 2 active devices), or a guardian quorum (§3.7). A single device MAY revoke **only itself** |
+  | ROTATE_ROOT | root signature plus the §3.7 time-lock and notification, or a guardian quorum |
+
+  Under this table, a thief holding one unlocked device cannot enrol an attacker device or revoke the
+  owner's other devices. `[UNPROVEN]`. The device-log head also needs a freshness bound against stale
+  views that omit a RevocationEntry. That is tracked in §16 (the device log, unlike the §5/§8 logs, has no
+  witnesses).
 
 ### 3.6 Threshold root
 
@@ -1076,13 +1092,15 @@ A verifying Steward relay MUST verify `proof` against the tribe's published issu
 `presentation_epoch`, MUST verify the holder-binding proof-of-possession, and MUST check `tag` against the
 epoch-scoped registry (§7.5) before forwarding any content accompanying the presentation.
 
+**Issuer-key consistency (normative, added in review 2026-10-07).** Every Spark issuer public key MUST be committed in the tribe's witnessed checkpoint log (§5.5) for the epochs in which it is valid. Before requesting issuance and before presenting, a client MUST verify that the key it was given is the one committed for that epoch. Otherwise a Steward set can issue to each member, or each small group, under a distinct key and identify every presentation by which key verifies it. This is the key-partitioning attack named for Privacy Pass and blind RSA [prior-art: RFC 9474 §7; RFC 9576].
+
 #### 7.2.3 NullifierTag
 
 | Field | Type | Description |
 |---|---|---|
 | `epoch` | epoch | The epoch this tag is scoped to. A tag is only meaningful, and only checked, within its own epoch and the grace window defined in §7.5. |
 | `tribe_id` | identifier | Tribe whose registry this tag belongs to. |
-| `tag_value` | hash | Opaque, deterministically derived from the underlying credential's private show-state and `context`; indistinguishable from random to anyone without the credential. Two presentations of the *same* show produce the *same* `tag_value`; two different shows (even from the same credential, under SPARK-BBS-1) produce unlinkable, independent `tag_value`s. |
+| `tag_value` | hash | Opaque, deterministically derived from the underlying credential's private secret and `(tribe, credential window, show_index)` **only** — never from `context`. `context` binds the payload inside the proof transcript, not the tag. (Corrected in review 2026-10-07: deriving the tag from `context`, the manifest hash, meant one show reused on a *different* manifest yielded a different tag, so double-spends went undetected.) Indistinguishable from random to anyone without the credential. Two presentations of the *same* show produce the *same* `tag_value`; two different shows (even from the same credential, under SPARK-BBS-1) produce unlinkable, independent `tag_value`s. |
 | `first_seen_at` | timestamp | Local to the observing relay; not part of what's signed or gossiped — used only for local bounded double-accept accounting (§7.5). |
 
 ### 7.3 SPARK-BBS-1 (target profile)
@@ -1117,6 +1135,15 @@ honest-majority-of-Stewards assumption (the same trust assumption §5's checkpoi
 The threshold nature of issuance does not weaken this: [BBS-THRESHOLD] shows the distributed protocol is
 simulatable against a single ideal signer, so an adversary corrupting fewer than the threshold gains no
 forging advantage over corrupting none.
+
+*Review note (2026-10-07) — this composition argument is withdrawn pending redesign, `[UNPROVEN]`.* ARC
+[ARC] is built on keyed-verification anonymous credentials (algebraic MACs), not BBS signatures. Its
+verifier needs the issuer's secret, so a relay could not verify "against the published issuer key" as
+§7.2 requires. Its rate limit is a verifier-set per-context limit with a deterministic tag and nonce, not
+client-side evolving state. A per-member variable budget (§7.6) also needs a range proof over a hidden
+attribute, which the CFRG BBS draft does not provide. The paragraphs below are kept as the v5 argument of
+record. A sound SPARK-BBS-1 needs either BBS with per-epoch pseudonyms and a range proof, or ARC with
+threshold-MAC issuance and verifiers holding MAC key shares. Tracked in §16.
 
 *Unlinkability across shows.* ARC's presentation-unlinkability argument [ARC] treats the signer's public
 key as an opaque parameter; nothing in ARC's proof depends on whether that key was produced by a single
@@ -1480,6 +1507,16 @@ needs — a legal takedown, a doxxing removal, PII that should never have been i
 the way C2PA resolves the same tension in its manifest chain: a `RedactionRecord` replaces the sensitive field
 content with its hash (a tombstone) rather than deleting the log entry `[C2PA]`.
 
+**Review note (2026-10-07).** An *unsalted* hash of low-entropy content, such as a name, a phone number
+or an address, can be confirmed by anyone who guesses it. The plaintext was also already mirrored
+before redaction. So a tombstone stops further distribution by conforming mirrors; it does not make the
+content "gone". Fields that may need redaction SHOULD be committed at publication time as **salted**
+per-field commitments, with the salts distributed alongside the content (C2PA's hashed-URI pattern). Redacting
+then withholds both content and salt, and the remaining commitment reveals nothing. RedactionRecords MUST be
+entries in the Beacon publication log (§8.2), so §8.7 readers see them. The "documented legal-authority
+signature" alternative has no trust anchor in HEARTH and SHOULD NOT be accepted by readers without
+the Steward threshold signature.
+
 **RedactionRecord**
 
 | Field | Type | Description |
@@ -1535,9 +1572,20 @@ treating a publication's status as current:
    word for a "not retracted" status.
 8. Walk the `StatusRecord` chain from publication to the present via `prior_status_record` links; verify no
    gaps and that each transition carries a resolvable `rationale_hash`; determine current `status`.
-9. If `status ∈ {disputed, retracted}`, the reader MUST surface this prominently and MUST NOT present the
-   publication as unretracted without having completed step 7 within a bounded freshness window
-   (Parameter: `BEACON_STATUS_FRESHNESS`, default 1 epoch (24 h), status: provisional).
+   **Completeness (normative, corrected in review 2026-10-07).** `prior_status_record` links point
+   *backwards*, so walking them cannot reveal a newer StatusRecord that a mirror withholds. The reader MUST
+   obtain a log head cosigned no more than `BEACON_STATUS_FRESHNESS` ago, plus a consistency proof from
+   `TribeSeal.log_head` to it. It MUST then either (a) verify a per-publication status-index proof against
+   that head, if the tribe publishes such an index (a prefix-tree map, as in Key Transparency, `[UNPROVEN]`
+   for HEARTH), or (b) obtain every log entry between the two heads and find the latest StatusRecord for
+   this publication. If neither can be completed, current status is **unknown**, never "active". Each
+   StatusRecord's authorization (`quorum_record` for `disputed`/`retracted`, the publishing author for
+   `self`) MUST be verified, not assumed.
+9. If `status ∈ {disputed, retracted}`, the reader MUST surface this prominently. **If `status ∈ {active,
+   reaffirmed}`, the reader MUST NOT present it as such unless step 8's completeness check succeeded
+   against a head no older than `BEACON_STATUS_FRESHNESS`** (Parameter, default 1 epoch (24 h), status:
+   provisional). A stale "not retracted" answer is the dangerous one. (v5 originally applied the freshness
+   gate to disputed and retracted statuses only, which left threat row 27 open.)
 10. Report to the reader: the named endorsers and their tiers at endorsement time, the publishing tribe's
     identity, seal validity, and current status. This is a **provenance report, not a correctness claim**
     (§8.9).
@@ -1665,6 +1713,20 @@ tribes that have an opinion:
 If none of R's tribes has an opinion of T, directly or via the bounded hop, the result **MUST** be reported as
 **"unrated from your vantage"** — an honest null, never a fabricated number.
 
+**Gaps named in review (2026-10-07).**
+- **Derivation of rᵢ(T) is underspecified.** v5 does not define how a tribe's records about T become rᵢ(T):
+  netting of several citations and disputes about the same pair, the decay clock and whether a later record
+  resets it, the hop combination formula (§9.5), the as-of epoch, and rounding. So two conforming clients can
+  compute different composites from the same records. A normative algorithm with test vectors is a
+  prerequisite for interoperability (§16).
+- **Abstention vs. weak opinion (normative):** an opinion with |rᵢ(T)| < `OPINION_EPSILON` (Parameter,
+  default 0.01, status: provisional) MUST be treated as ⊥. Without this, a fully decayed citation stays in the
+  denominator and pulls S toward 0 while inflating coverage. A CitationRecord with `weight = 0` is invalid.
+- **wᵢ is set by the tribes being aggregated.** R's standing in Aᵢ is issued by Aᵢ itself (§5), so each tribe
+  influences its own voice in R's composite. "Personalized" therefore means "weighted by the tribes that
+  admitted R". A reader-set local trust weight, with standing used only as a cap, is a candidate change
+  (§16).
+
 **Coverage.** The weighted average alone is dangerously overconfident on thin data: if only one low-standing
 tribe opines and the reader's established tribes abstain, the naive formula returns that lone opinion at full
 confidence, because abstainers drop out of the denominator (worked in detail below). A verifying client MUST
@@ -1675,7 +1737,7 @@ additionally compute and report:
 and MUST apply a minimum coverage fraction before presenting a confident composite; below the floor it MUST
 be surfaced as **"weak / uncorroborated"** rather than a headline number:
 
-> (Parameter: `COMPOSITE_COVERAGE_FLOOR`, default 0.25, status: sim-backed, evidence: Appendix C.6 (S5))
+> (Parameter: `COMPOSITE_COVERAGE_FLOOR`, default 0.25, status: provisional — downgraded from sim-backed in review 2026-10-07, evidence: Appendix C.6 (S5), see correction there)
 
 **The v4 "≥2 distinct opining tribes" floor is dropped, on simulation evidence — a v5 change.** The S5
 sweep (min-opining ∈ {1..4} × coverage floor ∈ {0.10..0.50}, lure-attack vs honest-thin-coverage scenarios,
@@ -1706,6 +1768,15 @@ breakdown and the coverage flag, so divergence and thin sourcing are shown rathe
   whole federation design: federation standing cannot be self-minted; it must be *received* from inside the
   reader's own trust neighborhood. Overlap-discounting (§4) additionally stops near-identical tribes inflating
   each other.
+  *Review note (2026-10-07):*
+  - **Not an empirical finding:** "contributes exactly 0" follows directly from the §9.4 formula. A tribe
+    nobody in the vantage cites has no term in it. This is a design argument, which is still valuable, but
+    not something a simulation discovered.
+  - **What it doesn't cover:** readers who never join the ring. A ring that recruits the reader is the lure
+    case (below), and that was tested only at weak attacker standing.
+  - **Overlap discount withdrawn:** the sentence about overlap-discounting has no mechanism behind it. §4.9.1
+    discounts only BridgeAttestations, CitationRecords carry no overlap field, and the S5 composite ignores
+    overlap. The claim is withdrawn until citations carry a witnessed overlap figure (§16).
 - **Transitive flow is OFF by default.** The only contamination path the pressure test found is a single
   *duped* citation from a tribe already in the reader's vantage to a ring; with one discounted hop at γ = 0.5
   that leaked a composite of 0.245 (~70% of a normal cross-bloc trust level) into the duped reader
@@ -1914,7 +1985,24 @@ whether a stuck partition is a mandatory, open-ended wait or a de facto schism.
 
 **Admission via external commit.** A new member's device joins the tribe's MLS group via an MLS External
 Commit, proposed by (or on behalf of) the vouchers who completed the member's admission flow (§4). The
-External Commit MUST carry a reference to the `AdmissionRecord` (§4) that authorizes the join. The
+External Commit MUST carry a reference to the `AdmissionRecord` (§4) that authorizes the join.
+
+**Review correction (2026-10-07).** In MLS an External Commit is built by the *joiner*, using the joiner's
+own keys and the group's GroupInfo [RFC9420 §12.4.3.2]. Vouchers cannot build one "on behalf of" the joiner.
+Two conforming paths exist, and a tribe MUST use one of them:
+- **Add + Welcome:** a voucher's device commits an Add for the joiner's KeyPackage and sends a Welcome.
+- **Joiner-built External Commit:** the joiner builds the commit, and GroupInfo is released only to holders
+  of a valid AdmissionRecord. Otherwise anyone holding GroupInfo can join.
+
+In both cases:
+- **AdmissionRecord reference:** carried in the commit's `authenticated_data`.
+- **Credentials:** every MLS leaf credential MUST carry the device's DeviceCertificate (§3).
+- **Member checks:** members MUST reject an Add whose identity has no current AdmissionRecord, or whose device
+  is not active in that identity's device log.
+- **Revoked or dormant devices:** a device revoked in its device log (§3.5), or belonging to a dormant or
+  expelled member, MUST be removed by a Steward-sequenced Remove (as an RFC 9420 external sender) within one
+  epoch of the revocation's appearance in the log. That bounds how long a compromised device keeps group
+  secrets. The
 sequencer Steward MUST verify the referenced `AdmissionRecord` is valid and current before sequencing the
 External Commit, and the resulting `SequencedCommitRecord` MUST be countersigned exactly as any other epoch
 advance (no admission-specific exception to the countersignature requirement).
@@ -2085,6 +2173,16 @@ identity's current epoch-derived hint key (through an existing relationship — 
 correlate hint-key lookups across epochs to a persistent identity, mitigating passive presence-enumeration
 by an observer who is merely watching the public DHT (v1-critique §1.12).
 
+**Review correction (2026-10-07).** As written, the derivation above has **no secret input**. `identity_id`
+is public and `device_id` can be fetched through the device log's open Search (§3.2), so anyone can compute
+every device's hint key for every epoch and track presence for any known pseudonym. The protection claimed
+above therefore does not hold. Corrected rule: `hint_key = KDF(locator_secret, epoch, "hint")`, where
+`locator_secret` is a per-identity random secret. The holder shares it only with parties entitled to locate
+them: given to contacts at 1:1 key exchange (§10.1), and to tribes through their MLS group state. Revoking a
+contact's ability to locate requires rotating `locator_secret`. `device_id` MUST NOT be an input.
+`[UNPROVEN]`. DHT nodes still cannot validate hint records, so DHT spam and Sybil eclipse remain
+as stated below.
+
 **Residual risk (stated explicitly, carried to §14):** within a single epoch, an adversary who already
 knows (or brute-forces, for a small enough identity-and-epoch search space) a target's `hint_key` can still
 observe lookup timing to infer presence/online windows for that epoch; an adversary who controls DHT
@@ -2203,6 +2301,21 @@ the Steward set) holds more than one of them. This bounds the blast radius of an
 A Steward set that reuses its checkpoint/seal FROST key for Spark issuance is **non-conformant**: a
 compromise or coercion of that single key would then forge both reputation checkpoints and anonymous
 distribution credentials simultaneously, which the separation above is designed to prevent.
+
+**Domain separation (normative, added in review 2026-10-07).** The device key signs many record types
+(MLS, Embers, vouches, complaints, endorsements, device-log entries). The Steward FROST key signs
+checkpoints, seals, Federation records and MLS countersignatures. So "no key may be reused across roles"
+holds per *role*, not per *record type*. To stop one record type being accepted as another:
+- **Labels:** every HEARTH signature MUST be computed over `"HEARTH-v5 " ‖ record_type_label ‖ 0x00 ‖
+  canonical_encoding(record)`, following MLS's `SignWithLabel` [RFC9420 §5.1.2]. Each record type has a
+  unique label (registry: future encoding specification, §16).
+- **Separate Steward keys:** a tribe SHOULD hold separate FROST keys for checkpoint/seal signing and for MLS
+  countersigning, so that compromising the high-frequency sequencing path cannot forge checkpoints.
+- **Noise handshakes:** these are authenticated by the device's static X25519 key, bound to its
+  DeviceCertificate. They are not *signed* by the device signing key, as the table above implies.
+
+The Noise pattern and prologue, the 1:1 Double Ratchet's initial key agreement (X3DH/PQXDH), and their suite
+identifiers are not specified anywhere in v5. Tracked in §16.
 
 ### 12.4 PQ migration
 
@@ -2682,6 +2795,23 @@ item**: v5 (§9.4) resolves it by dropping the ≥2-opining floor and relying on
 with a distinct, weaker "single-source" display status for the single-informed-tribe case rather than
 either a full composite or "weak."
 
+**Review correction (2026-10-07) — what S5 does and does not show.** `s5_lure_case` draws the lure tribe's
+vantage weight from U(0.05, 0.2) and the honest (abstaining) tribe's from U(0.6, 0.95). Lure coverage is
+`w_mal / (w_honest + w_mal)`, so its maximum is 0.2 / 0.8 = **0.25**, exactly the chosen floor.
+- **The "0%" is structural:** the 0% at floor 0.25 follows from the sampling ranges, not from attacker
+  behaviour. A lure tribe with vantage weight 0.3 against an honest 0.8 has coverage 0.27 and passes. §9.9
+  concedes that the attacker influences this weight. The floor is therefore downgraded to provisional, and
+  an attacker-chosen-weight sweep is open (§16).
+- **The ≥2 floor:** "adds no additional lure protection" is true only at floor ≥ 0.25. At floors 0.10 and
+  0.15, min_opining ≥ 2 gives 0% lure against 74% / 40%. Its "100% suppression" of the single-source case
+  holds by construction, since every scenario has exactly one opining tribe.
+- **Model gaps:** the sim's "ok" status is a bare number, while §9.4 forbids a bare number for n = 1, so S5
+  does not test the shipped display rule. There is no multi-lure-tribe scenario.
+- **Precision:** N = 100 per cell, so percentages carry roughly ±5–9 points of sampling error. The results
+  are directional.
+- **Sim text:** the sim's printed text still says min_opining ≥ 2 is "required structurally". That
+  contradicts the decision recorded here, which stands.
+
 ### C.7 Feud-damping corroboration (S7)
 
 Mutual disputes retain full weight iff each side is corroborated by >=1 independent tribe; else damped
@@ -2710,6 +2840,21 @@ is wrongly muted 93.5% of the time). Requiring corroboration from *both* sides c
 problem (needs two independent successes). Per §9.6/§16, v5 ships the v4 blanket mutual-discount as the
 default and carries this corroboration refinement forward as an open question, with the candidate
 relaxation of requiring corroboration on only the weaker side.
+
+**Review correction (2026-10-07) — S7 is an analytic result, not a mechanism simulation.** `run_s7` draws two
+independent Bernoulli trials per case.
+- **True mutual warnings:** the "correct" rate is exactly p_corr² (0.09 / 0.36 / 0.81). The reported 6.5% /
+  40.5% / 80.0% are those values plus 200-sample noise.
+- **Tit-for-tat:** these rows use a fixed false-corroboration rate of 0.08 regardless of p_corr, so all three
+  rows are one experiment. The true rate is 1 − 0.08² = 99.4%, not "100% at every density".
+- **Adversaries not modelled:** a tribe manufacturing corroboration (sybil tribes trivially satisfy "no
+  member overlap"), and the asymmetric case where a bad tribe answers a genuine dispute with a cheap
+  counter-dispute so that *both* are damped (×0.4). In that case the shipped blanket mutual discount is
+  itself a weapon.
+- **"Pre-registered":** the "pre-registered decision rule" is a threshold in the same script that produced
+  the numbers. The deferral decision stands, because the analytic result supports it. The precision and
+  the "pre-registered" label do not.
+- **Open (§16):** a retaliation-discount rule for Federation disputes, analogous to §6.2.
 
 ---
 
