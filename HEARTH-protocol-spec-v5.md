@@ -717,9 +717,25 @@ This is new machinery, not present in any prior HEARTH spec version, closing the
 
 **5.2.2 Per-pair diminishing weight.** Repeat Embers from the same issuer to the same recipient decay in marginal value, to stop a colluding pair pumping each other repeatedly within a single relationship. Let `c(issuer, recipient)` be the decay-weighted count of prior Embers from issuer to recipient (using the same `λ` as §5.3, so old repeat-issuance "forgets" over time rather than accumulating a permanent penalty):
 
-> `diminishing_factor = δ^⌊c(issuer, recipient)⌋`
+> `diminishing_factor = 1 / (1 + c(issuer, recipient))`
 
-(Parameter: `δ`, default 0.5, status: provisional, evidence: none — not modelled by S2, see §5.2.1 correction.)
+(Status: provisional, evidence: Appendix A.10 (S8), directional. **Amended 2026-10-07; the v5 rule below was falsified by S8.**)
+
+**Why the rule changed.** v5 shipped `diminishing_factor = δ^⌊c⌋` with δ = 0.5. Because `c` decays with the 90-day reputation half-life, a pair's counter never falls far between interactions. S8 (Appendix A.10) shows the consequences:
+- **Frequent interaction is worthless.** A pair interacting weekly or more often contributes ≈ 0 at equilibrium.
+- **A cliff at 90 days.** A pair's contribution peaks when they issue about once every 92 days. Issuing every 89 days instead *halves* it, because ⌊c⌋ steps from 0 to 1.
+- **More interaction, less standing.** Across a whole tribe, members' standing *falls* as interaction rises: the median steady member drops from 10.9 to 2.1 base units as the interaction rate goes from 0.25 to 2 per day.
+
+The protocol was paying members to ration their attestations to once a quarter per person. The continuous `δ^c` variant has the same defect.
+
+**What the replacement does.** `1 / (1 + c)`, with the same 90-day counter:
+- **Rewards interaction:** standing rises monotonically with interaction rate (9.3 → 13.5 base units).
+- **No cliff.**
+- **Bounded per relationship:** a relationship sustains at most about 1 `BASE_UNIT` at equilibrium, however often the pair interacts.
+
+Bounding each relationship is what lets a colluding pair reach only about **8%** of the honest calibration target at its best schedule. Under the v5 rule that figure was 34%, so four colluders issuing each other once a quarter could all hold Steward-eligible standing.
+
+The v5 rule and its data are kept in Appendix A.10. The parameter `δ` is retired.
 
 **Budget overflow ordering (normative).** When an issuer exceeds `B_E` in an epoch, the Embers counted are the first `B_E` in ascending `(sequence, record hash)` order. Every other order lets two Steward implementations count different Embers.
 
@@ -737,6 +753,10 @@ This is new machinery, not present in any prior HEARTH spec version, closing the
 - **Result:** the paragraph above records what v5 originally concluded, and that conclusion is withdrawn. **The equilibrium of the actual §5.2 mechanics is unmeasured.** So is whether members reach the Steward-eligible tier at all, which governs succession (§4.1, §15.3).
 
 S2's growth and dormancy results stand, because they do not depend on how inflow is generated. Re-running S2 with §5.2 implemented per Ember is an open item (§16).
+
+**First measurement of the real mechanics (S8, Appendix A.10).** Under the amended §5.2.2 rule, a homogeneous small-world tribe (60 members, about 12 contacts each, one interaction per active day) puts its median steady member at 1.0 when `BASE_UNIT ≈ 0.079`. Equilibrium scales roughly with the number of distinct relationships a member has, so `BASE_UNIT` is tribe policy, committed via `policy_hash` (§5.5), with 0.08 as a reference value for a typical degree of about 12.
+
+The same run puts 98% of members in Steward-eligible, which would make the tier ladder discriminate almost nothing. That figure is **not** a finding about real tribes: the model gives every member the same degree, and lets members receive Embers regardless of their own activity. Whether the ladder separates members in a heterogeneous tribe is still open (§16 item 8).
 
 ### 5.3 Decay
 
@@ -2536,6 +2556,10 @@ asserts nothing about these beyond what is written here.
 
 8. **S2 must implement §5.2.** The equilibrium of the real Ember mechanics, and whether anyone reaches
    Steward-eligible (and so whether Steward succession is sustainable), is unmeasured (§5.2.6 correction).
+   *Partly addressed by S8 (Appendix A.10, 2026-10-07):* the per-pair rule was falsified and replaced, and
+   `BASE_UNIT` was calibrated for a homogeneous tribe. Still open: heterogeneous degree and activity-coupled
+   receipt (does the tier ladder discriminate?), newcomer time-to-Member (§6.8), multi-member collusion cliques
+   under the connectivity discount, and real `B_E` defaults.
 9. **Weighted conviction gate.** §6.2/§6.4 refer to a weighted total that was never defined. Conviction is
    count-only until a weighted threshold is specified and simulated (§6.3).
 10. **Quorum curve for N = 12–24.** The shipped standard rule wrongfully convicts 81–92% at 30–33% capture
@@ -2714,6 +2738,70 @@ at small N (8: 59%->12%) with only a modest further reliability hit and adds 5-8
 a genuinely bad actor in a small tribe becomes meaningfully harder to convict at all (legit-conviction
 reliability roughly halves-to-thirds under the 50% rule) — this is the honest cost of closing the capture
 hole, not a free win.
+
+
+### A.10 Ember issuance mechanics (S8) — added 2026-10-07
+
+`[sim: hearth_v5_ember_sim.py]`, stdlib, deterministic, seeds 1–10, results in `hearth_v5_ember_sim_results.json`,
+trust-anchor tests in `tests/test_ember_sim.py`. This is the first simulation of §5.2 as written: per-Ember weights,
+per-tier budgets (`B_E` = 3 / 5 / 8, **assumed**, since the spec gives none), tier and proximity multipliers (30%
+proximity), and the per-pair diminishing factor with a decayed counter `c`. Epoch = 1 day. One run takes 26 s.
+
+**E1 — what one relationship is worth.** The long-run reputation a single issuer sustains in a single recipient,
+issuing on a fixed schedule, in `BASE_UNIT`s (Member issuer, proximity):
+
+| Rule (counter half-life) | 1 d | 7 d | 14 d | 30 d | 60 d | 89 d | 92 d | 120 d | 180 d |
+|---|---|---|---|---|---|---|---|---|---|
+| **v5 `δ^⌊c⌋` (90 d) — falsified** | 0.00 | 0.00 | 0.04 | 0.55 | 1.08 | **0.72** | **1.43** | 1.11 | 0.72 |
+| `δ^⌊c⌋` (14 d) | 0.00 | 4.66 | 9.32 | 4.37 | 2.15 | 1.43 | 1.43 | 1.11 | 0.72 |
+| `δ^c` (90 d) | 0.00 | 0.00 | 0.02 | 0.30 | 0.66 | 0.71 | 0.73 | 0.70 | 0.57 |
+| **`1/(1+c)` (90 d) — adopted** | 1.00 | 0.98 | 0.95 | 0.90 | 0.80 | 0.71 | 0.73 | 0.67 | 0.54 |
+
+The v5 rule values a relationship at zero if the pair interacts weekly or more. It peaks at one Ember per ~92
+days and halves at 89 days, the point where the steady counter `c* = λᵏ/(1−λᵏ)` crosses 1.0. The adopted rule is
+smooth and nearly flat, and it is bounded at about 1 `BASE_UNIT` however often the pair interacts.
+
+**E2 — honest tribe** (n = 60, Watts–Strogatz degree 12, p_rewire 0.1; activity 50% at 0.9, 30% at 0.5, 20% at
+0.15; Poisson interactions per active day; 730 days; mean over 10 seeds of the steady members' median reputation,
+`BASE_UNIT` = 1):
+
+| Rule | rate 0.25/d | 0.5/d | 1/d | 2/d | `BASE_UNIT` for steady median 1.0 at 1/d |
+|---|---|---|---|---|---|
+| **v5 `δ^⌊c⌋` (90 d)** | 10.93 | 8.28 | 4.48 | **2.07** | 0.236 |
+| `δ^⌊c⌋` (14 d) | 22.80 | 41.16 | 63.10 | 65.54 | 0.016 |
+| `δ^c` (90 d) | 7.81 | 5.84 | 3.11 | 1.49 | 0.339 |
+| **`1/(1+c)` (90 d)** | 9.27 | 11.20 | 12.65 | **13.49** | **0.079** |
+
+Under the v5 rule (and `δ^c`), standing **falls** as honest interaction rises. Under the adopted rule it rises.
+
+**Colluding pair ceiling.** A pair cooperating to pump each other picks its best schedule, so its ceiling is the
+maximum of its E1 row, multiplied by that rule's calibrated `BASE_UNIT`. Expressed as a share of the 1.0 steady
+target, that is:
+- v5 rule: 1.43 × 0.236 = **0.34**. Three such pairs among four colluders (each receiving from three others)
+  reach about 1.0, enough for all four to hold Steward-eligible standing by issuing each other about once a quarter.
+- `δ^⌊c⌋` with a 14-day counter: 0.15.
+- `δ^c`: 0.25.
+- **Adopted `1/(1+c)`: 0.08.** About 7–10 colluders are needed before each member reaches 0.75 (seven once their own Trusted-tier ×1.5 multiplier applies), and every one of
+  them must first be admitted through vouching (§4).
+
+E3 simulated a *naive* pair pumping daily at full budget. It reached 0 under the floor and smooth rules and about
+1 `BASE_UNIT` under the hyperbolic rule. Because it ignores schedule choice, it understates collusion, and the
+ceiling above is the relevant figure.
+
+**Limitations (named).**
+- **Homogeneous degree, and receipt independent of activity.** Every member has about 12 contacts, and a member
+  receives Embers whether or not they are active. That is why intermittent members end up as high as steady
+  ones, and why 77–98% of members sit in Steward-eligible at calibration. Tier-distribution figures are
+  therefore not findings about real tribes.
+- **Not modelled:** newcomer time-to-Member (so §6.8's "~14 days" remains unvalidated), the connectivity
+  discount, colluding cliques larger than a pair, and penalties.
+- **Assumed constants:** `B_E` values are assumed. Results scale linearly with `BASE_UNIT`, apart from
+  tier-multiplier feedback.
+
+**Verdict.** The v5 per-pair rule is falsified on a property the spec intends: rewarding good-faith
+participation (§1.1). It is replaced by `1/(1+c)` as a post-simulation amendment, provisional, in the S1
+precedent. The adopted rule has not been tested against heterogeneous tribes or multi-member cliques (§16
+item 8).
 
 ---
 
@@ -2931,7 +3019,8 @@ are as defined in §0.2.
 | `DORMANCY_COOLDOWN` | 60 days | sim-backed | Appendix A.6 (zero dormancy vouch-leaks across every seed/chill level) | §4.10 |
 | `DORMANCY_PROBATION` | 14 days | provisional | none — mirrors §3.5's device-probation pattern | §4.10 |
 | `B_E(Member)` / `B_E(Trusted)` / `B_E(Steward-eligible)` | per-tier, deployment-set (committed via `policy_hash`) | provisional | none — S2 does not model §5.2 (review correction) | §5.2.1 |
-| `δ` | 0.5 | provisional | none — S2 does not model §5.2 (review correction) | §5.2.2 |
+| `δ` | **retired** (was 0.5) | — | falsified by S8, Appendix A.10; §5.2.2 now uses `1/(1+c)` | §5.2.2 |
+| `BASE_UNIT` | 0.08 reference (tribe policy via `policy_hash`) | provisional | Appendix A.10 (S8): steady median 1.0 at degree ≈ 12, 1 interaction/day | §5.2 |
 | `tier_multiplier(Member)` | 1.0 | provisional | none — S2 does not model §5.2 (review correction) | §5.2.3 |
 | `tier_multiplier(Trusted)` | 1.5 | provisional | none — S2 does not model §5.2 (review correction) | §5.2.3 |
 | `tier_multiplier(Steward-eligible)` | 2.0 | provisional | none — S2 does not model §5.2 (review correction) | §5.2.3 |
