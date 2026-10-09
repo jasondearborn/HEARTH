@@ -1,0 +1,22 @@
+{
+  "name": "@hearth/engine",
+  "version": "0.0.0",
+  "private": true,
+  "description": "HEARTH reference engine: spec-faithful math for HEARTH-protocol-spec-v5.md",
+  "license": "SEE LICENSE IN ../LICENSE",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "trace": "node scripts/check-trace.mjs",
+    "test": "tsc -p tsconfig.json && node --test dist/test/ scripts/ && node scripts/check-trace.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "typescript": "^5.6.0"
+  }
+}
