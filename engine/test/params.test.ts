@@ -162,7 +162,7 @@ test('PARAMS is deeply frozen', () => {
   }
 });
 
-test('each entry carries its // spec App. D: <name> tag', () => {
+test('each entry carries its App. D name tag', () => {
   for (const name of Object.keys(PARAMS)) {
     assert.ok(PARAMS_SRC.includes(`// spec App. D: ${name}\n`), name);
   }
