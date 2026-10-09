@@ -3154,6 +3154,9 @@ future change to the base parameter propagates correctly.
   gate, the appeal draw, checkpoint leaves and `policy_hash`. Security fixes: the Spark tag, issuer-key
   consistency, Beacon status completeness, per-operation device authorization, MLS admission per RFC 9420,
   and the presence-hint secret. Also: threat rows 36–44 and §16 items 8–17.
+- **v5, engine conformance note (2026-10-09)** — §13.6 added while starting the TypeScript reference
+  engine: it closes what §5.1's fixed-point rule left open (the value of λ, division rounding, operand
+  order, term-by-term evaluation) so independent implementations agree bit for bit.
 
 ---
 
