@@ -79,8 +79,10 @@ def ember_weight(base_unit, issuer_tier, conn_mult, proximity, c, variant="floor
 
 
 def pair_contribution_per_day(interval_days, variant="floor", counter_half_life=H, days=4000,
-                              base_unit=1.0, issuer_tier="Member", proximity=True):
-    """Mean weight/day one issuer gives one recipient, issuing every interval_days (2nd half)."""
+                              base_unit=1.0, issuer_tier="Member", proximity=True, trace=None):
+    """Mean weight/day one issuer gives one recipient, issuing every interval_days (2nd half).
+
+    If trace is a list, (day, c before this Ember, weight) is appended per Ember."""
     c = 0.0
     cl = counter_decay(counter_half_life)
     total = 0.0
@@ -88,6 +90,8 @@ def pair_contribution_per_day(interval_days, variant="floor", counter_half_life=
         c *= cl
         if d % interval_days == 0:
             w = ember_weight(base_unit, issuer_tier, 1.0, proximity, c, variant)
+            if trace is not None:
+                trace.append((d, c, w))
             c += 1.0
             if d >= days // 2:
                 total += w

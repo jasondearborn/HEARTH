@@ -30,6 +30,8 @@ SPEC_TIER = {"Stranger": "Stranger", "Member": "Member", "Trusted": "Trusted",
 ISSUER_TIERS = ("Member", "Trusted", "Steward")     # Strangers cannot issue (§5.2.1)
 CONNECTIVITY = ("1.0", "0.75", "0.5", "0.25")
 MAX_GAP = 730                   # decay gaps covered by the stated tolerance (§13.6 rationale)
+COUNTER_INTERVALS = (1, 2, 7, 30, 89, 92)
+COUNTER_DAYS = 365
 
 # Tolerances. Weight: the multiplier product is exact in fixed point (all factors have
 # <= 6 decimals combined), so only the diminishing-factor div and the final mul round:
@@ -40,6 +42,8 @@ TOLERANCE = {
     "weight_abs": 2e-6,
     "decay_rel": 1e-3,
     "reputation": "abs(ts - py) <= sum over terms of (decay_rel * |term| + weight_abs + 1e-6)",
+    "counter_rel": 1e-3,   # C is a sum of pow(LAMBDA, k) terms, each within decay_rel of λ^k (k <= 365)
+    "counter_weight_abs": 2.2e-5,   # weight_abs + BASE_UNIT * counter_rel / 4 (d/dc 1/(1+c) <= 1/4 at worst)
 }
 
 
@@ -109,6 +113,17 @@ def reputation_vectors(rng, n=12):
     return out
 
 
+def counter_vectors():
+    out = []
+    for iv in COUNTER_INTERVALS:
+        trace = []
+        E.pair_contribution_per_day(iv, VARIANT, days=COUNTER_DAYS, base_unit=float(BASE_UNIT),
+                                    issuer_tier="Member", proximity=True, trace=trace)
+        out.append({"interval_days": iv, "days": COUNTER_DAYS,
+                    "embers": [{"epoch": d, "c": c, "weight": w} for d, c, w in trace]})
+    return out
+
+
 def build():
     rng = random.Random(SEED)
     with open(os.path.join(ROOT, SIM_FILE), "rb") as f:
@@ -119,14 +134,16 @@ def build():
             "source": SIM_FILE,
             "source_sha256": sim_sha,
             "seed": SEED,
-            "spec": "HEARTH-protocol-spec-v5.md §5.1, §5.2, §5.3, §4.2, §13.6",
+            "spec": "HEARTH-protocol-spec-v5.md §5.1, §5.2, §5.3, §4.2, §13.6, §5.2.2 counter evaluation",
             "variant": VARIANT,
             "base_unit": BASE_UNIT,
             "units": "decimal quantities as strings (exact at REP_SCALE); expected values float64",
             "penalties": "amount is positive and subtracted (§5.1 penalty term); the sim has no "
                          "penalties, so their float terms are computed here with the sim's LAM",
+            "counter": "one issuer to one recipient every interval_days, Member, proximity, connectivity 1; c is the sim's decayed pair counter before each Ember (pair_contribution_per_day recurrence, no RNG)",
             "tolerance": TOLERANCE,
         },
+        "counter": counter_vectors(),
         "decay": decay_vectors(),
         "tier": tier_vectors(),
         "weight": weight_vectors(rng),

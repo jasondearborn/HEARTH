@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { LAMBDA, REP_SCALE, pow, fromDecimal } from '../src/fixed.js';
 import { tierOf, emberWeight, decayedTerm, reputation, type Tier } from '../src/embers.js';
+import { checkpointWeights, type EmberRecord } from '../src/ledger.js';
 
 interface WeightCase {
   issuer_tier: Tier; connectivity: string; context: 'proximity' | 'remote'; c: string;
@@ -32,6 +33,34 @@ const weightOf = (w: WeightCase): bigint =>
     baseUnit: BASE, issuerTier: w.issuer_tier, connectivity: fromDecimal(w.connectivity),
     context: w.context, C: fromDecimal(w.c),
   });
+
+interface CounterVectors {
+  meta: { tolerance: { counter_rel: number; counter_weight_abs: number } };
+  counter: Array<{ interval_days: number; days: number; embers: Array<{ epoch: number; c: number; weight: number }> }>;
+}
+
+test('counter: C and weight replayed from the log match the sim recurrence (§5.2.2)', () => {
+  const CV = V as unknown as CounterVectors;
+  const ctol = CV.meta.tolerance;
+  assert.ok(CV.counter.length >= 4);
+  const budgets = { Member: 1, Trusted: 1, 'Steward-eligible': 1 };
+  for (const s of CV.counter) {
+    const log: EmberRecord[] = s.embers.map((e, i) => ({
+      issuer: 'i', recipient: 'r', tribe: 'T', epoch: e.epoch, context: 'proximity',
+      sequence: i, recordHash: i.toString(16).padStart(8, '0'), issuerTier: 'Member',
+      connectivity: REP_SCALE,
+    }));
+    const got = checkpointWeights(log, budgets, BASE);
+    assert.equal(got.length, s.embers.length);
+    for (const [i, e] of s.embers.entries()) {
+      const C = toFloat(got[i]!.C);
+      const w = toFloat(got[i]!.weight);
+      const where = `interval ${s.interval_days} epoch ${e.epoch}`;
+      assert.ok(Math.abs(C - e.c) <= ctol.counter_rel * e.c + 1e-6, `${where}: C ${C} vs ${e.c}`);
+      assert.ok(Math.abs(w - e.weight) <= ctol.counter_weight_abs, `${where}: weight ${w} vs ${e.weight}`);
+    }
+  }
+});
 
 test('vectors file is non-trivial', () => {
   assert.ok(V.decay.length >= 10 && V.tier.length >= 10);

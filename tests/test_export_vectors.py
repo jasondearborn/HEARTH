@@ -37,6 +37,34 @@ class GoldenVectors(unittest.TestCase):
         tiers = {v["expected"] for v in d["tier"]}
         self.assertEqual(tiers, {"Stranger", "Member", "Trusted", "Steward-eligible"})
 
+    def test_counter_vectors(self):
+        """§5.2.2 pair counter, replayed from the sim's pair_contribution_per_day recurrence."""
+        d = X.build()
+        tol = d["meta"]["tolerance"]
+        self.assertIn("counter_rel", tol)
+        self.assertIn("counter_weight_abs", tol)
+        sched = {s["interval_days"]: s for s in d["counter"]}
+        self.assertTrue({1, 7, 89, 92} <= set(sched))
+        for iv, s in sched.items():
+            es = s["embers"]
+            self.assertGreaterEqual(len(es), 2, iv)
+            self.assertEqual(es[0]["c"], 0.0)
+            self.assertEqual([e["epoch"] for e in es], list(range(0, s["days"], iv)))
+            self.assertTrue(all(e["epoch"] <= X.MAX_GAP for e in es))
+            self.assertTrue(all(abs(e["weight"] - float(X.BASE_UNIT) / (1 + e["c"])) < 1e-12
+                                for e in es), iv)
+        # daily issuance approaches the equilibrium counter λ/(1−λ) ≈ 129
+        self.assertGreater(sched[1]["embers"][-1]["c"], 100)
+
+    def test_sim_trace_matches_mean(self):
+        """The trace hook does not change what pair_contribution_per_day returns."""
+        E = X.E
+        trace = []
+        a = E.pair_contribution_per_day(7, "hyperbolic", days=400, trace=trace)
+        b = E.pair_contribution_per_day(7, "hyperbolic", days=400)
+        self.assertEqual(a, b)
+        self.assertEqual([t[0] for t in trace], list(range(0, 400, 7)))
+
 
 if __name__ == "__main__":
     unittest.main()

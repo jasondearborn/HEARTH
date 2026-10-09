@@ -27,21 +27,33 @@ protected file changed.
   (tol 2e-6), decay 0.064% (tol 0.1%), R_m 4.6e-6 abs. `tests/test_export_vectors.py` fails if
   the committed vectors go stale against the sim. Gates: Python 20/20, engine 40/40, trace 103 tags.
 
+- 2026-10-09 (nightly 3): **pair counter `C` and budget overflow, spec then engine.** Spec §5.2.2
+  "Counter evaluation (normative)": budget applied first, over-budget Embers neither weigh nor
+  raise `c` (`[UNPROVEN]`, definitional); prior = `(epoch, sequence, record hash)` within the
+  pair, same-epoch prior counts 1; `C = Σ pow(LAMBDA, Δepoch)` term by term. New **proved**
+  per-relationship bound `R_pair ≤ K·log₂(1 + S)` (numerically tight to 0.994 over 1 500 random
+  schedules; the "≈1 BASE_UNIT" figure is only the steady-schedule equilibrium). Self-issued
+  Embers made invalid (v5 never forbade them; threat row 45). `src/ledger.ts`: `countedEmbers`,
+  `checkpointWeights`, `memberReputation` (validates: one tribe per log, no Stranger issuers,
+  one tier per issuer per epoch, hex hashes, no duplicates). Property tests: log-order
+  independence (two Stewards agree), monotone decay, `0 ≤ C`, the log₂ bound, export allowlist
+  (no aggregate API). Golden vectors: 623 per-Ember counters from S8's recurrence (6 intervals ×
+  365 days; sim gained a no-op `trace` hook): max C rel err 1.0e-5 (tol 1e-3), weight 5.4e-7
+  (tol 2.2e-5). Gates: Python 22/22, engine 58/58 in 4 s, trace 109 tags.
+
 ## Next
-1. **Spec first, then embers.ts slice 2: the pair counter `C` and budget overflow.** Already done:
-   weight given `C`, decay, `R_m` given weights (see State). Still open, and to settle in the spec
-   before coding (labelled), then derive `C` per Ember from an EmberRecord log, apply `B_E`
-   overflow ordering, and add property tests (monotone decay, bounded per-relationship sum, no
-   global score reachable via the API). Golden vectors for this slice: export the per-Ember
-   `c` values from the sim's `pair_contribution_per_day` recurrence (deterministic, no RNG).
-   `run_tribe` uses Python's Mersenne Twister, so replay its Ember *log* rather than reimplementing
-   the RNG in TS. Also serves the game's "per-observer reputation query" request.
-   **Open questions:** (a) §5.2.2 "prior Embers": ordered how
-   within one epoch (by `(sequence, record hash)` as in budget overflow?), and do over-budget
-   Embers count toward `c`? (b) `c` itself in fixed point: `Σ pow(LAMBDA, t − epoch(prior))`?
-   (c) §5.1 `R_m` is one tribe-scoped checkpoint value, not per-observer; the game's
-   "observer's view" maps to the observer's provisional local recomputation (§5.1, §5.5.2) or to
-   the §9 composite. Say which in the API docs; don't invent a per-observer score in §5.
+1. **ledger.ts slice 2: explain + observer view (game request "per-observer reputation query").**
+   Add `explainReputation(log, budgets, baseUnit, member, penalties, t)` returning each counted
+   term (record, C, weight, decayed value) so the game can show "the events that drove it".
+   API docs must say: §5.1 `R_m` is one tribe-scoped value; an "observer's view" is that
+   observer's provisional recomputation over the Embers *they* have seen (§5.1, §5.5.2), i.e.
+   `memberReputation` over the observer's local log. No per-observer score in §5. Also export
+   `ledger.ts` from a package `index.ts` (package.json `main` points at a missing
+   `dist/src/index.js`).
+2. **Spec: budget ordering across recipients.** §5.2 makes `sequence` per-recipient, but the
+   overflow rule orders an issuer's whole epoch by `(sequence, record hash)`, so sequences from
+   different recipients are compared. Deterministic (engine implements it as written), but
+   meaningless as an order; consider an issuer-global sequence or `(record hash)` alone. Label it.
 3. **membership.ts (§4):** vouching, admission, voucher stake and slash, probation, expulsion.
    Also the game's "vouch, admit and slash flow callable from a game tick".
 4. **adjudication.ts (§6).**
@@ -79,5 +91,17 @@ protected file changed.
   two roundings; decay: the stated <0.1% drift to 730 epochs; R_m: per-term sum of both). The
   exporter maps sim names to spec names (`Steward` → `Steward-eligible`, `hyperbolic` = current
   §5.2.2 rule). Penalty float terms are computed in the exporter because the sim has none.
+- 2026-10-09 (nightly 3): over-budget Embers do **not** count toward `c`: §5.2.1 excludes them
+  from aggregation and `c` is aggregation; otherwise a weightless record would change others'
+  weights. Self-issued Embers are dropped (invalid, not an error) so one bad record cannot stop a
+  Steward's whole checkpoint; malformed records (bad hash, mixed tribe, Stranger issuer) throw.
+  Issuer tier and connectivity are inputs on each record (from the latest checkpoint, §4.2), not
+  derived by the ledger, so the ledger never needs a running reputation state.
+- 2026-10-09 (nightly 3): `pow(LAMBDA, k)` in the ledger is a memoised table of the same left
+  fold (§13.6 rule 4 allows tables with identical results). The direct fold made the gate 6 min.
+- 2026-10-09 (nightly 3): delegation record. Qwen (harness, 2 repairs, then opencode) ended
+  blocked on ledger.ts (~200 lines, over the ~150-line slice guideline: should have been two
+  tasks). The follow-up went to a Sonnet agent rather than a second Qwen round because Qwen's own
+  loop had already spent its repairs, and the night's clock was short. Sonnet fixed it in 25 s.
 - 2026-10-09: Strangers issuing an Ember is a `RangeError` in the engine (§5.2.1: budgets exist for
   Member+ only), not the sim's silent weight 0. The vectors exclude Stranger issuers.
