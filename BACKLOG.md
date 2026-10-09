@@ -18,16 +18,25 @@ protected file changed.
   + unit tests + trace check. Spec: §13.6 reputation arithmetic added (λ = 992 328, half-even
   `mul`/`div`, left-fold `pow`, operand order, term-by-term evaluation).
 
+- 2026-10-09 (nightly 2): **golden vectors + first slice of embers.ts.** `tools/export_vectors.py`
+  (stdlib, seed 20261009) drives `hearth_v5_ember_sim.py` and writes `engine/vectors/ember.json`
+  (decay, tier, 60 weight cases, 12 R_m histories incl. penalties and a clamp case; tolerances
+  derived in the file). `src/embers.ts` (drafted by local Qwen first try, reviewed): `tierOf`,
+  `tierMultiplier`, `proximityMultiplier`, `diminishingFactor`, `emberWeight` (§13.6 rule 5 fold),
+  `decayedTerm`, `reputation` (term-by-term, penalties, clamp). Measured agreement: weight 4.8e-7
+  (tol 2e-6), decay 0.064% (tol 0.1%), R_m 4.6e-6 abs. `tests/test_export_vectors.py` fails if
+  the committed vectors go stale against the sim. Gates: Python 20/20, engine 40/40, trace 103 tags.
+
 ## Next
-1. **Golden vectors.** `tools/export_vectors.py` (stdlib) drives the existing sim functions
-   (`hearth_v5_ember_sim.py` first) with fixed seeds and writes `engine/vectors/*.json`. The TS
-   tests must reproduce them within a stated tolerance. Two independent implementations must
-   agree.
-2. **embers.ts (§5):** Ember accrual, decay, the 1/(1+c) per-pair diminishing rule (§5.2.2),
-   bounds. Property tests: monotone decay, bounded scores, no global score reachable via the API.
-   Also serves the game's "per-observer reputation query" request. Build on `fixed.ts`
-   (§13.6 rules 4–6: left-fold `pow`, left-to-right weight product, term-by-term `R_m`).
-   **Open questions to settle in the spec first:** (a) §5.2.2 "prior Embers" — ordered how
+1. **Spec first, then embers.ts slice 2: the pair counter `C` and budget overflow.** Already done:
+   weight given `C`, decay, `R_m` given weights (see State). Still open, and to settle in the spec
+   before coding (labelled), then derive `C` per Ember from an EmberRecord log, apply `B_E`
+   overflow ordering, and add property tests (monotone decay, bounded per-relationship sum, no
+   global score reachable via the API). Golden vectors for this slice: export the per-Ember
+   `c` values from the sim's `pair_contribution_per_day` recurrence (deterministic, no RNG).
+   `run_tribe` uses Python's Mersenne Twister, so replay its Ember *log* rather than reimplementing
+   the RNG in TS. Also serves the game's "per-observer reputation query" request.
+   **Open questions:** (a) §5.2.2 "prior Embers": ordered how
    within one epoch (by `(sequence, record hash)` as in budget overflow?), and do over-budget
    Embers count toward `c`? (b) `c` itself in fixed point: `Σ pow(LAMBDA, t − epoch(prior))`?
    (c) §5.1 `R_m` is one tribe-scoped checkpoint value, not per-observer; the game's
@@ -65,3 +74,10 @@ protected file changed.
 - 2026-10-09: `params.ts` stores App. D reuses (`LINKAGE_HALF_LIFE`=`H`, `BEACON_RETRACT_PENALTY`
   =`P_dir`, …) as references, not copied literals, as App. D's consistency note asks; a test
   re-parses App. D on every run so spec edits that drift from the engine fail the gate.
+- 2026-10-09: golden-vector tolerances are **derived from §13.6 error bounds and written in the
+  vectors file**, never fitted to observed differences (weight: exact multiplier product, so only
+  two roundings; decay: the stated <0.1% drift to 730 epochs; R_m: per-term sum of both). The
+  exporter maps sim names to spec names (`Steward` → `Steward-eligible`, `hyperbolic` = current
+  §5.2.2 rule). Penalty float terms are computed in the exporter because the sim has none.
+- 2026-10-09: Strangers issuing an Ember is a `RangeError` in the engine (§5.2.1: budgets exist for
+  Member+ only), not the sim's silent weight 0. The vectors exclude Stranger issuers.
