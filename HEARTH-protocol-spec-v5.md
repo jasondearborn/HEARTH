@@ -2413,6 +2413,47 @@ witness-cosignature cross-check and the freshness bound — before presenting a 
 "not retracted," and MUST present Federation composites with their coverage qualifier, never as a bare
 number (§9).
 
+### 13.6 Reputation arithmetic (all roles)
+
+Added 2026-10-09 while building the reference engine. §5.1 already requires fixed-point arithmetic at
+`REP_SCALE` = 10⁶ with half-to-even rounding after each multiplication. That alone does not make two
+implementations agree bit for bit: it leaves the value of λ, division, operand order and integer width
+open. Any role that computes or verifies a reputation value (Client self-monitoring, Steward checkpoint
+signing, Witness or Verifier recomputation) MUST follow these rules:
+
+1. **Representation.** A quantity *x* is the integer `X = x × REP_SCALE`. Intermediate products MUST be
+   computed exactly (arbitrary-precision integers, or 64-bit integers with overflow treated as an error,
+   never wrapped). Float64 is not sufficient: the product of two scaled values exceeds 2⁵³ once both
+   exceed about 95 units.
+2. **Rounding.** `mul(A, B) = round(A·B / REP_SCALE)` and `div(A, B) = round(A·REP_SCALE / B)`, where
+   `round` takes the exact rational to the nearest integer, ties to even. The rule is the same for
+   negative operands; truncating integer division is non-conforming.
+3. **Parameters.** Decimal parameters convert exactly (e.g. `BASE_UNIT` 0.08 → 80 000). A policy value
+   with more than six decimal places is invalid and MUST be rejected, not rounded.
+4. **λ.** `LAMBDA = round(0.5^(1/H) × REP_SCALE)`, ties to even, evaluated exactly; for `H` = 90 this is
+   **992 328**. `pow(LAMBDA, k)` is the left fold `acc ← REP_SCALE; repeat k times: acc ← mul(acc, LAMBDA)`.
+   Any faster method (e.g. a lookup table) MUST give identical results; square-and-multiply does not and
+   is non-conforming.
+5. **Operand order.** Products of several factors are folded left to right in the order written in the
+   spec, rounding at each step; for §5.2 that is
+   `BASE_UNIT × tier_multiplier × connectivity_multiplier × proximity_multiplier × diminishing_factor`.
+   The §5.2.2 factor is `div(REP_SCALE, REP_SCALE + C)`, with `C` the scaled decay-weighted count.
+6. **Evaluation form.** The canonical `R_m(t)` is the term-by-term sum of §5.1: each Ember and penalty
+   term is `mul(weight, pow(LAMBDA, t − epoch))`, the terms are summed exactly, and the result is clamped
+   at 0. Carrying a running total forward (`R ← mul(R, LAMBDA) + inflow`) rounds differently and MUST NOT
+   be used to produce or verify a checkpoint value.
+
+*Rationale (non-normative).* Fixed point over float64-with-rounding-points: float64 `pow` and fused
+operations differ across platforms and JavaScript engines, while integer arithmetic is identical
+everywhere. Rule 6 keeps the value recomputable from the Ember log alone, which is what the deterministic
+replay of §6.5 needs. The cost is per-step rounding drift against exact λ^k: `pow(LAMBDA, 90)` is
+500 003 against an exact 500 000, and `pow(LAMBDA, 730)` is 3 619 against 3 616.7 — under 0.1% of the
+value, far below the 0.10 gap between tier thresholds (both figures reproduced by
+`engine/test/fixed.test.ts`). `[UNPROVEN]`: that this drift never moves a member across a tier threshold
+in a way that matters; nothing measures it on a real Ember history. The Python simulations use float64
+and are non-normative; agreement between them and the reference engine is checked within a tolerance
+stated in each golden-vector file, not bit for bit.
+
 ---
 
 ## 14. Threat model
