@@ -143,6 +143,29 @@ test('validation: one tribe per log, no Stranger issuers, consistent tier, well-
   assert.throws(() => countedEmbers([ok], { ...BUDGETS, Member: 1.5 }), RangeError);
 });
 
+test('validation: one tier per issuer per epoch, for every pair of tiers', () => {
+  const pairs: Array<[Tier, Tier]> = [['Member', 'Steward-eligible'], ['Trusted', 'Member'], ['Steward-eligible', 'Trusted']];
+  for (const [x, y] of pairs) {
+    const log = [rec({ epoch: 4, sequence: 0, issuerTier: x }), rec({ epoch: 4, sequence: 1, issuerTier: y, recipient: 'c' })];
+    assert.throws(() => countedEmbers(log, BUDGETS), RangeError, `${x}/${y}`);
+    // a tier change across epochs is legitimate (tier comes from the latest checkpoint, §4.2)
+    const ok = [rec({ epoch: 4, sequence: 0, issuerTier: x }), rec({ epoch: 5, sequence: 1, issuerTier: y })];
+    assert.equal(countedEmbers(ok, BUDGETS).length, 2);
+  }
+});
+
+test('identifiers containing separators never collide (pairs and budget groups)', () => {
+  // naive `${issuer}-${recipient}` keys merge a-b→c with a→b-c
+  const log = [
+    rec({ epoch: 0, sequence: 0, issuer: 'a-b', recipient: 'c' }),
+    rec({ epoch: 0, sequence: 1, issuer: 'a', recipient: 'b-c' }),
+    rec({ epoch: 1, sequence: 2, issuer: 'a-b', recipient: 'c' }),
+    rec({ epoch: 1, sequence: 3, issuer: 'a', recipient: 'b-c' }),
+  ];
+  const C = checkpointWeights(log, { ...BUDGETS, Member: 1 }, BASE).map((x) => x.C);
+  assert.deepEqual(C, [0n, 0n, LAMBDA, LAMBDA]);
+});
+
 test('API exposes no tribe-wide or cross-tribe aggregate (anti-goal: no global score)', () => {
   assert.deepEqual(Object.keys(ledger).sort(), ['checkpointWeights', 'countedEmbers', 'memberReputation']);
 });
