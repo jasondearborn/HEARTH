@@ -27,6 +27,8 @@ delete a documented failure.
 | `HEARTH-protocol-spec-v1..v4.md` | Historical. Frozen. | Almost never — only explicit history tasks |
 | `HEARTH-v1-critique.md` | Historical. Frozen. | Almost never |
 | `hearth_v5_sim.py` | Current simulations | Sim work only |
+| `engine/` | TypeScript reference engine (in progress) | Engine work; see BACKLOG.md |
+| `BACKLOG.md` | State, next tasks, decisions (nightly queue) | Start of every task |
 | `hearth_v3_sim.py`, `hearth_federation_sim.py` | Historical sims. Frozen. | Almost never |
 | `*_sim_results.json` | Raw sim output | **Never read raw** — see Simulations |
 
