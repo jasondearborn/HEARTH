@@ -140,7 +140,9 @@ test('lists, unset, text and retired kinds', () => {
   assert.equal(PARAMS['δ']!.status, 'retired');
   assert.throws(() => resolve('δ'), Error);
   assert.deepEqual(PARAMS['Spark budget curve shape']!.value, { kind: 'text', text: 'linear-above-gate' });
-  assert.throws(() => resolve('NO_SUCH_PARAM'), Error);
+  assert.throws(() => resolve('NO_SUCH_PARAM'), /Unknown parameter/);
+  assert.throws(() => resolve('constructor'), /Unknown parameter/);
+  assert.throws(() => resolve('__proto__'), /Unknown parameter/);
 });
 
 test('every numeric value converts exactly to fixed point (§13.6 rule 3)', () => {
