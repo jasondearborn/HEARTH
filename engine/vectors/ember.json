@@ -1,0 +1,2833 @@
+{
+ "decay": [
+  {
+   "expected": 1.0,
+   "k": 0
+  },
+  {
+   "expected": 0.9923279462629435,
+   "k": 1
+  },
+  {
+   "expected": 0.9847147529344313,
+   "k": 2
+  },
+  {
+   "expected": 0.9475160078148388,
+   "k": 7
+  },
+  {
+   "expected": 0.8977865850653697,
+   "k": 14
+  },
+  {
+   "expected": 0.7937005259841006,
+   "k": 30
+  },
+  {
+   "expected": 0.7071067811865487,
+   "k": 45
+  },
+  {
+   "expected": 0.5038656846085774,
+   "k": 89
+  },
+  {
+   "expected": 0.5000000000000017,
+   "k": 90
+  },
+  {
+   "expected": 0.49616397313147337,
+   "k": 91
+  },
+  {
+   "expected": 0.2500000000000016,
+   "k": 180
+  },
+  {
+   "expected": 0.12500000000000122,
+   "k": 270
+  },
+  {
+   "expected": 0.060138989805884856,
+   "k": 365
+  },
+  {
+   "expected": 0.02126234375272502,
+   "k": 500
+  },
+  {
+   "expected": 0.003616698094872323,
+   "k": 730
+  }
+ ],
+ "meta": {
+  "base_unit": "0.08",
+  "generator": "tools/export_vectors.py",
+  "penalties": "amount is positive and subtracted (\u00a75.1 penalty term); the sim has no penalties, so their float terms are computed here with the sim's LAM",
+  "seed": 20261009,
+  "source": "hearth_v5_ember_sim.py",
+  "source_sha256": "992f0a2124572f51185bb0400210ace175bf4c337583a1d284af6c244736260e",
+  "spec": "HEARTH-protocol-spec-v5.md \u00a75.1, \u00a75.2, \u00a75.3, \u00a74.2, \u00a713.6",
+  "tolerance": {
+   "decay_rel": 0.001,
+   "reputation": "abs(ts - py) <= sum over terms of (decay_rel * |term| + weight_abs + 1e-6)",
+   "weight_abs": 2e-06
+  },
+  "units": "decimal quantities as strings (exact at REP_SCALE); expected values float64",
+  "variant": "hyperbolic"
+ },
+ "reputation": [
+  {
+   "embers": [
+    {
+     "c": "1.419057",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 56,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 441,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.902575",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 438,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.603997",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 132,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.948882",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 484,
+     "issuer_tier": "Trusted"
+    }
+   ],
+   "expected": 0.012505236534467022,
+   "penalties": [],
+   "t": 641
+  },
+  {
+   "embers": [
+    {
+     "c": "2.500364",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 446,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.986580",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 392,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.793422",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 328,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.001742",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 32,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.454725",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 411,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 310,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.176927",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 48,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.836179",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 186,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.329504",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 403,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.325023",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 79,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.949740",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 310,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 380,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.640428",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 203,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "4.533589",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 391,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.102848",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 337,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.303136",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 196,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.386735",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 92,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.463332",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 448,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.365368",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 252,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.441952",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 287,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.970138",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 264,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 72,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.213710",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 202,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 153,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "4.090659",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 382,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.451836",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 250,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.230522",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 96,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 33,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 135,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.026539",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 346,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.651202",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 428,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.578097",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 278,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.156940",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 355,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 2,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.841129",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 204,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "2.688149",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 279,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.456793",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 54,
+     "issuer_tier": "Trusted"
+    }
+   ],
+   "expected": 0.21118515305710808,
+   "penalties": [],
+   "t": 456
+  },
+  {
+   "embers": [
+    {
+     "c": "3.144016",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 187,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.667843",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 51,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.221779",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 125,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.800705",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 325,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.683287",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 416,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.776939",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 422,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.509719",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 272,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.899472",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 356,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.247249",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 396,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.051831",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 81,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.749756",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 327,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 346,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.973656",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 342,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.360829",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 221,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.211241",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 47,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.345360",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 305,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.996017",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 302,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.147723",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 345,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.124423",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 353,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 256,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.329399",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 16,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.195005",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 128,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.410146",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 303,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 34,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.638964",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 135,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.777571",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 419,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.267712",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 63,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.443795",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 167,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 189,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.294744",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 304,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.088815",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 29,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 385,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.112609",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 367,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.932038",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 334,
+     "issuer_tier": "Trusted"
+    }
+   ],
+   "expected": 0.19205061479841531,
+   "penalties": [
+    {
+     "amount": "0.424693",
+     "epoch": 1
+    }
+   ],
+   "t": 449
+  },
+  {
+   "embers": [
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 300,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.204313",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 54,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "2.430716",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 502,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.583971",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 122,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.015729",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 100,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.093740",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 220,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.930025",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 277,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 223,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.724813",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 129,
+     "issuer_tier": "Member"
+    }
+   ],
+   "expected": 0.033291573368017434,
+   "penalties": [],
+   "t": 569
+  },
+  {
+   "embers": [
+    {
+     "c": "2.813514",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 511,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.784592",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 486,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.055080",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 478,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.004883",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 120,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.772021",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 494,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.523934",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 388,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.662796",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 274,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 77,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.784496",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 349,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.345116",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 76,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 179,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.150932",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 327,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.442804",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 392,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.394535",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 173,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 334,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.156480",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 479,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 115,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.227687",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 248,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.576228",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 186,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 169,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.760059",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 492,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.356958",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 215,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.719812",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 248,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.422364",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 362,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 414,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "4.977377",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 464,
+     "issuer_tier": "Member"
+    }
+   ],
+   "expected": 0.16729840182812758,
+   "penalties": [],
+   "t": 511
+  },
+  {
+   "embers": [
+    {
+     "c": "2.746184",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 138,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.497776",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 89,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "2.331500",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 147,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.087502",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 160,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "2.463869",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 6,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.489154",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 232,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.265430",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 31,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 63,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.353193",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 293,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.608046",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 360,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "2.670887",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 354,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.758677",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 15,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.633047",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 240,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.942563",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 144,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.663632",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 255,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.113992",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 178,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.660703",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 269,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "4.284712",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 327,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.986851",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 244,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.424795",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 92,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.191670",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 277,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.161171",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 218,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "2.372487",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 100,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.108946",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 171,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.291793",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 68,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.155191",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 326,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.019494",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 237,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.594958",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 143,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.172024",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 3,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.839087",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 329,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 170,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.279080",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 135,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.418709",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 229,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 235,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.140063",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 245,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 286,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 226,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.790677",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 357,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.333248",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 290,
+     "issuer_tier": "Steward-eligible"
+    }
+   ],
+   "expected": 0.3528482185047434,
+   "penalties": [
+    {
+     "amount": "0.058596",
+     "epoch": 263
+    }
+   ],
+   "t": 374
+  },
+  {
+   "embers": [
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 595,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.169655",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 635,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.797741",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 561,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.730541",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 251,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.462653",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 90,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 37,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.202012",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 209,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.798359",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 74,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.117050",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 218,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.470071",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 47,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 112,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 109,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 36,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "2.082089",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 63,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.063444",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 639,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.735322",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 607,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 13,
+     "issuer_tier": "Member"
+    }
+   ],
+   "expected": 0.10074187896147489,
+   "penalties": [],
+   "t": 655
+  },
+  {
+   "embers": [
+    {
+     "c": "0.406126",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 229,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "2.050678",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 263,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.257330",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 362,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.369636",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 191,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.637378",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 40,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "4.202174",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 297,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.416980",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 185,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.558586",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 273,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.571675",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 163,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 315,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.791473",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 60,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.045290",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 324,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.643118",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 66,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.915758",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 46,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.150954",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 267,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.147148",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 264,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.588769",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 443,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.944832",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 147,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.882300",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 450,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.303798",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 402,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.718531",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 427,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.315799",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 141,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 171,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 385,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 336,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.349605",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 172,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 347,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.247721",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 175,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.123115",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 141,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 319,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.550184",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 431,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.329539",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 426,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.180285",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 278,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.577194",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 156,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.879914",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 392,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 330,
+     "issuer_tier": "Member"
+    }
+   ],
+   "expected": 0.28891105012664164,
+   "penalties": [],
+   "t": 454
+  },
+  {
+   "embers": [
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 516,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.719133",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 515,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 178,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.988158",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 288,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.088905",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 174,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 314,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 326,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.398737",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 465,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.755912",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 471,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.443989",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 411,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.387976",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 231,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.793373",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 332,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.606329",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 301,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.777395",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 369,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 485,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 435,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.248322",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 421,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.443672",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 153,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.990316",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 469,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.933993",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 124,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.250167",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 413,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.501682",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 90,
+     "issuer_tier": "Member"
+    }
+   ],
+   "expected": 0.17322156670869998,
+   "penalties": [
+    {
+     "amount": "0.421965",
+     "epoch": 253
+    }
+   ],
+   "t": 552
+  },
+  {
+   "embers": [
+    {
+     "c": "3.793837",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 305,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.344908",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 100,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.388409",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 65,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.382387",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 314,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.615633",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 267,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.793216",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 281,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 215,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 175,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.870488",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 305,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.045507",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 59,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.024515",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 27,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.523355",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 341,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.350346",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 135,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.155610",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 335,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.632509",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 228,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "4.073616",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 360,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.239620",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 132,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.514671",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 155,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.565642",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 374,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.992727",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 45,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "4.417911",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 248,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.449690",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 342,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.132358",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 359,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.358295",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 188,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.747850",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 299,
+     "issuer_tier": "Member"
+    }
+   ],
+   "expected": 0.18877938588009235,
+   "penalties": [],
+   "t": 399
+  },
+  {
+   "embers": [
+    {
+     "c": "4.649184",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 442,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.270233",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 475,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 216,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.439079",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 188,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 569,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.005123",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 52,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.711081",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 572,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.646962",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 477,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.289301",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 23,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 74,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.614775",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 86,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.370610",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 77,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.029186",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 414,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "2.022571",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 183,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 110,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.554632",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 376,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.932328",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 370,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 124,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.465072",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 523,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.185661",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 225,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.230675",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 367,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.306990",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 23,
+     "issuer_tier": "Trusted"
+    }
+   ],
+   "expected": 0.11368108500369008,
+   "penalties": [],
+   "t": 578
+  },
+  {
+   "embers": [
+    {
+     "c": "4.336271",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 341,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "4.628570",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 37,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.568739",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 63,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.534687",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 581,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.230467",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 240,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.350186",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 584,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 331,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.569557",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 225,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "4.704873",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 240,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "4.999701",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 626,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 154,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.210032",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 287,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 379,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "2.930796",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 474,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.147082",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 46,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.287802",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 9,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.166875",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 620,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "3.089578",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 168,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.169340",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 199,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.681190",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 409,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "3.681649",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 449,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "2.787657",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 103,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 486,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 417,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "3.487889",
+     "connectivity": "0.75",
+     "context": "remote",
+     "epoch": 59,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.452577",
+     "connectivity": "0.5",
+     "context": "remote",
+     "epoch": 547,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.698372",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 280,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "1.509132",
+     "connectivity": "0.5",
+     "context": "proximity",
+     "epoch": 79,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "1.238770",
+     "connectivity": "0.25",
+     "context": "proximity",
+     "epoch": 609,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "2.647520",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 609,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "0.000000",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 255,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "1.784566",
+     "connectivity": "0.25",
+     "context": "remote",
+     "epoch": 126,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "2.388434",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 290,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.623413",
+     "connectivity": "0.75",
+     "context": "proximity",
+     "epoch": 576,
+     "issuer_tier": "Trusted"
+    },
+    {
+     "c": "0.557583",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 186,
+     "issuer_tier": "Steward-eligible"
+    },
+    {
+     "c": "4.360839",
+     "connectivity": "1.0",
+     "context": "remote",
+     "epoch": 48,
+     "issuer_tier": "Member"
+    },
+    {
+     "c": "0.017494",
+     "connectivity": "1.0",
+     "context": "proximity",
+     "epoch": 127,
+     "issuer_tier": "Member"
+    }
+   ],
+   "expected": 0.0,
+   "penalties": [
+    {
+     "amount": "50.000000",
+     "epoch": 381
+    },
+    {
+     "amount": "50.000000",
+     "epoch": 78
+    },
+    {
+     "amount": "50.000000",
+     "epoch": 2
+    }
+   ],
+   "t": 643
+  }
+ ],
+ "tier": [
+  {
+   "expected": "Stranger",
+   "r": "0"
+  },
+  {
+   "expected": "Stranger",
+   "r": "0.000001"
+  },
+  {
+   "expected": "Stranger",
+   "r": "0.099999"
+  },
+  {
+   "expected": "Member",
+   "r": "0.1"
+  },
+  {
+   "expected": "Member",
+   "r": "0.100001"
+  },
+  {
+   "expected": "Member",
+   "r": "0.25"
+  },
+  {
+   "expected": "Member",
+   "r": "0.399999"
+  },
+  {
+   "expected": "Trusted",
+   "r": "0.4"
+  },
+  {
+   "expected": "Trusted",
+   "r": "0.749999"
+  },
+  {
+   "expected": "Steward-eligible",
+   "r": "0.75"
+  },
+  {
+   "expected": "Steward-eligible",
+   "r": "0.750001"
+  },
+  {
+   "expected": "Steward-eligible",
+   "r": "1"
+  },
+  {
+   "expected": "Steward-eligible",
+   "r": "5"
+  }
+ ],
+ "weight": [
+  {
+   "c": "0.419453",
+   "connectivity": "0.75",
+   "context": "remote",
+   "expected": 0.03381584314521157,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "4.650621",
+   "connectivity": "0.25",
+   "context": "proximity",
+   "expected": 0.007078867968671055,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "4.619154",
+   "connectivity": "0.5",
+   "context": "remote",
+   "expected": 0.005694807438984587,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "3.208536",
+   "connectivity": "0.25",
+   "context": "remote",
+   "expected": 0.0038017971094936576,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "2.155227",
+   "connectivity": "0.25",
+   "context": "remote",
+   "expected": 0.0025354752605755465,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "0.5",
+   "context": "remote",
+   "expected": 0.032,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "2.060430",
+   "connectivity": "0.5",
+   "context": "remote",
+   "expected": 0.007842035269553625,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "3.305869",
+   "connectivity": "0.75",
+   "context": "remote",
+   "expected": 0.005573787776636959,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "2.079752",
+   "connectivity": "0.25",
+   "context": "proximity",
+   "expected": 0.009741044084069107,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "2.548636",
+   "connectivity": "0.25",
+   "context": "proximity",
+   "expected": 0.005635968298805512,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "0.75",
+   "context": "proximity",
+   "expected": 0.12,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "3.411137",
+   "connectivity": "0.5",
+   "context": "proximity",
+   "expected": 0.013601935283352115,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "4.053060",
+   "connectivity": "0.5",
+   "context": "proximity",
+   "expected": 0.007915995456218608,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "1.0",
+   "context": "proximity",
+   "expected": 0.16,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "4.052892",
+   "connectivity": "1.0",
+   "context": "proximity",
+   "expected": 0.03166503459800843,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "3.899280",
+   "connectivity": "0.75",
+   "context": "remote",
+   "expected": 0.0073480184843487195,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "4.362705",
+   "connectivity": "0.5",
+   "context": "remote",
+   "expected": 0.005967137853005153,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "2.683358",
+   "connectivity": "0.75",
+   "context": "remote",
+   "expected": 0.006515793468894416,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "0.671993",
+   "connectivity": "0.25",
+   "context": "remote",
+   "expected": 0.004784709026891859,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "4.297368",
+   "connectivity": "0.5",
+   "context": "remote",
+   "expected": 0.00604073570120105,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "1.0",
+   "context": "proximity",
+   "expected": 0.12,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "2.890702",
+   "connectivity": "0.75",
+   "context": "remote",
+   "expected": 0.012337105231909305,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "0.75",
+   "context": "remote",
+   "expected": 0.036,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "1.0",
+   "context": "proximity",
+   "expected": 0.08,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "4.847138",
+   "connectivity": "0.75",
+   "context": "proximity",
+   "expected": 0.020522860927859064,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "4.457600",
+   "connectivity": "0.25",
+   "context": "proximity",
+   "expected": 0.00732922896511287,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "0.521341",
+   "connectivity": "0.25",
+   "context": "proximity",
+   "expected": 0.02629259317930694,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "3.221580",
+   "connectivity": "0.25",
+   "context": "proximity",
+   "expected": 0.009475125426972842,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "1.143842",
+   "connectivity": "0.5",
+   "context": "proximity",
+   "expected": 0.018658091407855616,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "4.454763",
+   "connectivity": "0.25",
+   "context": "remote",
+   "expected": 0.002933216346888032,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "4.968065",
+   "connectivity": "0.75",
+   "context": "proximity",
+   "expected": 0.020107019611884252,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "0.5",
+   "context": "remote",
+   "expected": 0.024,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "2.818351",
+   "connectivity": "0.25",
+   "context": "proximity",
+   "expected": 0.005237863150873243,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "1.127931",
+   "connectivity": "0.25",
+   "context": "remote",
+   "expected": 0.007519040795965658,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "0.392131",
+   "connectivity": "1.0",
+   "context": "proximity",
+   "expected": 0.05746585630231638,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "3.141447",
+   "connectivity": "1.0",
+   "context": "proximity",
+   "expected": 0.038633839814924596,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "2.297033",
+   "connectivity": "1.0",
+   "context": "remote",
+   "expected": 0.009705696000009706,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "2.527239",
+   "connectivity": "0.25",
+   "context": "proximity",
+   "expected": 0.011340314620018662,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "2.058120",
+   "connectivity": "0.75",
+   "context": "proximity",
+   "expected": 0.019619897191738712,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "1.141053",
+   "connectivity": "0.25",
+   "context": "proximity",
+   "expected": 0.009341197999302211,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "3.423752",
+   "connectivity": "1.0",
+   "context": "proximity",
+   "expected": 0.0361683928032132,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "0.513836",
+   "connectivity": "0.25",
+   "context": "proximity",
+   "expected": 0.019817206091016466,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "2.109103",
+   "connectivity": "1.0",
+   "context": "remote",
+   "expected": 0.02058471526996693,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "0.75",
+   "context": "proximity",
+   "expected": 0.09,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "3.298239",
+   "connectivity": "1.0",
+   "context": "remote",
+   "expected": 0.011167364122841934,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "4.937429",
+   "connectivity": "1.0",
+   "context": "remote",
+   "expected": 0.010779076263480371,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "0.5",
+   "context": "proximity",
+   "expected": 0.06,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "0.5",
+   "context": "remote",
+   "expected": 0.016,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "3.913520",
+   "connectivity": "0.25",
+   "context": "remote",
+   "expected": 0.0016281606668946092,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "1.0",
+   "context": "proximity",
+   "expected": 0.08,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "4.081993",
+   "connectivity": "0.5",
+   "context": "remote",
+   "expected": 0.006296742242659524,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "0.5",
+   "context": "proximity",
+   "expected": 0.08,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "0.25",
+   "context": "remote",
+   "expected": 0.008,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "1.825993",
+   "connectivity": "1.0",
+   "context": "remote",
+   "expected": 0.022646906768700417,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "2.287028",
+   "connectivity": "0.75",
+   "context": "proximity",
+   "expected": 0.03650714262245408,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "2.505095",
+   "connectivity": "0.25",
+   "context": "remote",
+   "expected": 0.0022823917754012375,
+   "issuer_tier": "Member"
+  },
+  {
+   "c": "2.183152",
+   "connectivity": "0.5",
+   "context": "proximity",
+   "expected": 0.018849241255208673,
+   "issuer_tier": "Trusted"
+  },
+  {
+   "c": "0.000000",
+   "connectivity": "0.75",
+   "context": "remote",
+   "expected": 0.048,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "3.360175",
+   "connectivity": "1.0",
+   "context": "remote",
+   "expected": 0.014678309930220691,
+   "issuer_tier": "Steward-eligible"
+  },
+  {
+   "c": "4.709709",
+   "connectivity": "1.0",
+   "context": "proximity",
+   "expected": 0.028022443875861273,
+   "issuer_tier": "Steward-eligible"
+  }
+ ]
+}
