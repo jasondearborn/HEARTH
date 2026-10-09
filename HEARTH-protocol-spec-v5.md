@@ -709,6 +709,8 @@ This is new machinery, not present in any prior HEARTH spec version, closing the
 | sequence | uint | Issuer-local, per-recipient sequence number (used for §5.2.2) |
 | signature | signature | Issuer's device-key signature over the above |
 
+An EmberRecord whose `issuer` equals its `recipient` is invalid. Stewards MUST NOT aggregate it, and it does not count toward the issuer's budget (§5.2.1) or any `c` (§5.2.2). (Added 2026-10-09: v5 did not forbid self-issuance, which would let every member pump their own standing at full budget.)
+
 `weight(e)` is computed by the Steward set at checkpoint time (not carried in the record itself) as:
 
 > `weight(e) = BASE_UNIT × tier_multiplier(issuer) × connectivity_multiplier(issuer) × proximity_multiplier(e) × diminishing_factor(issuer, recipient, e)`
@@ -738,6 +740,15 @@ Bounding each relationship is what lets a colluding pair reach only about **8%**
 The v5 rule and its data are kept in Appendix A.10. The parameter `δ` is retired.
 
 **Budget overflow ordering (normative).** When an issuer exceeds `B_E` in an epoch, the Embers counted are the first `B_E` in ascending `(sequence, record hash)` order. Every other order lets two Steward implementations count different Embers.
+
+**Counter evaluation (normative, added 2026-10-09 while building the reference engine).** The text above leaves three choices open, and Steward implementations that choose differently compute different weights. They are fixed as follows:
+1. **Budget first.** Budget overflow is applied first, per issuer per epoch, using the issuer's tier from the latest CheckpointRecord (§4.2). `c` counts only Embers inside the budget. An over-budget Ember has no weight and does not raise `c` for later Embers. *Why:* §5.2.1 excludes over-budget Embers from checkpoint aggregation, and `c` is part of aggregation. Counting them would let an Ember that carries no weight still change the weight of other Embers. `[UNPROVEN]`: this is a definitional choice. S8 caps issuance at the budget, so it never produces an over-budget Ember to measure.
+2. **Prior Embers.** Within one (issuer, recipient) pair, counted Embers are ordered by ascending `(epoch, sequence, record hash)`, with record hashes compared as byte strings. The prior Embers of `e` are the counted Embers of the same pair that come before `e` in this order, including earlier ones in the same epoch. A prior Ember from the same epoch contributes 1 to `c`.
+3. **Fixed point.** `C(e) = Σ pow(LAMBDA, epoch(e) − epoch(p))` over the prior Embers `p` of `e`. Each term is computed per §13.6 rule 4 and the terms are summed exactly. Carrying the counter forward (`C ← mul(C, LAMBDA) + 1`) rounds differently and MUST NOT be used, for the same reason as §13.6 rule 6.
+
+Items 2 and 3 match the S8 recurrence (decay once at the start of each day, then +1 after each Ember) in exact arithmetic `[sim: hearth_v5_ember_sim.py §pair_contribution_per_day]`. The reference engine reproduces those counters within the tolerance stated in `engine/vectors/ember.json`.
+
+**Per-relationship bound (proved 2026-10-09).** Let `K` be the largest undiminished weight (`BASE_UNIT × tier × connectivity × proximity`) among a pair's counted Embers. Let `S(t) = Σ λ^(t − epoch(p))` over all of the pair's counted Embers up to `t`. Then the pair's total contribution to the recipient's `R` at `t` is at most `K · log₂(1 + S(t))`. One issuer adds at most `B_E` to `S` per epoch, so `S < B_E / (1 − λ)` ≈ 130 × `B_E`. *Proof.* Write `aᵢ = λ^(t − epoch(eᵢ)) ≤ 1` and `Sᵢ = a₁ + … + aᵢ`. Then `cᵢ·aᵢ = Sᵢ₋₁`, so Ember *i* contributes at most `K·aᵢ²/(aᵢ + Sᵢ₋₁) ≤ K·u` with `u = aᵢ/(1 + Sᵢ₋₁) ≤ 1` (the inequality is `aᵢ·Sᵢ₋₁ ≤ Sᵢ₋₁`, true because `aᵢ ≤ 1`), and `1 + u = (1 + Sᵢ)/(1 + Sᵢ₋₁)`. Since `u ≤ log₂(1 + u)` on [0, 1], each term is at most `K·log₂((1 + Sᵢ)/(1 + Sᵢ₋₁))`, and the sum telescopes. The bound is tight for a single Ember issued at `t`. It is a worst case. The "about 1 `BASE_UNIT`" figure above is the equilibrium of a steady schedule [sim: hearth_v5_ember_sim.py §E1], not a ceiling. In fixed point, each term may exceed this bound by its rounding error (§13.6). The engine's property tests check the bound with that slack.
 
 **5.2.3 Tier-weighting.** `tier_multiplier(issuer)` scales an Ember's contribution by the issuer's own standing — a Trusted or Steward-eligible member's endorsement of good conduct carries more weight than a freshly-admitted Member's. (Parameter: `tier_multiplier(Member) = 1.0`, `tier_multiplier(Trusted) = 1.5`, `tier_multiplier(Steward-eligible) = 2.0`, status: provisional, evidence: none — not modelled by S2, see §5.2.1 correction.)
 
@@ -2508,6 +2519,7 @@ Each row names the adversary, the verdict, and the load-bearing mechanism. Verdi
 | 42 | Spark issuer-key partitioning to deanonymize members | Mitigated (added in review) | Issuer keys committed in the witnessed checkpoint log; client key-consistency check (§7.2) |
 | 43 | Counter-dispute muting a genuine Federation dispute (both sides damped ×0.4) | Accepted risk (named in review) | Blanket mutual damping (§9.6) has no retaliation discount. Open (§16) |
 | 44 | Stewards observing the intra-tribe interaction graph | Accepted risk (named in review) | Inherent to Steward-computed checkpoints (§5.9). Private aggregation is future work |
+| 45 | Self-issued Ember (issuer = recipient) pumping own standing | Mitigated (by definition, added 2026-10-09) | Such records are invalid and never aggregated (§5.2). Collusion between two roots is row 6, and §5.2.2 bounds each pair to `K·log₂(1 + S)` |
 
 ### 14.1 Reading the table honestly (non-normative)
 
