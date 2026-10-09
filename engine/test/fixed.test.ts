@@ -1,4 +1,4 @@
-// Fixed-point reputation arithmetic. spec §13.6, spec §5.1
+// spec §13.6, §5.1 — fixed-point reputation arithmetic
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { REP_SCALE, LAMBDA, roundDiv, mul, div, fromDecimal, pow } from '../src/fixed.js';

@@ -1,4 +1,4 @@
-// Appendix D transcription. spec App. D
+// spec App. D — parameter transcription
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

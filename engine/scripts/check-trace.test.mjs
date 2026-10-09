@@ -80,7 +80,7 @@ test('unknown sections, appendices and parameter names are reported with file:li
 });
 
 test('a spec tag with no recognisable reference is malformed', () => {
-  const { errors } = checkTrace(fixture({ 'm.ts': 'x(); // spec somewhere\n' }));
+  const { errors } = checkTrace(fixture({ 'm.ts': '// spec somewhere\n' }));
   assert.equal(errors.length, 1);
   assert.match(errors[0], /m\.ts:1\b.*malformed/);
 });
