@@ -23,7 +23,7 @@ export interface TransitivePenalty {
 
 // spec §4.7
 export function decayedLinkage(edge: VouchEdge, t: number): bigint {
-  if (edge.admittedAt > t) throw new RangeError();
+  if (edge.admittedAt > t) throw new RangeError("admitted_at must not exceed t");
   return mul(edge.linkageWeight, pow(LAMBDA, t - edge.admittedAt));
 }
 
@@ -32,8 +32,10 @@ export function penaltyFraction(
   hop: number,
   weights: readonly bigint[],
 ): bigint {
-  if (!Number.isInteger(hop) || hop < 0) throw new RangeError();
-  if (weights.length !== hop + 1) throw new RangeError();
+  if (!Number.isInteger(hop) || hop < 0)
+    throw new RangeError("hop must be a non-negative integer");
+  if (weights.length !== hop + 1)
+    throw new RangeError("a hop-h path has h + 1 edge weights");
   let acc = fx("P_dir");
   acc = mul(acc, pow(fx("g"), hop));
   for (const w of weights) {
@@ -42,107 +44,81 @@ export function penaltyFraction(
   return acc;
 }
 
+const cmp = <T extends string | number | bigint>(a: T, b: T): number =>
+  a < b ? -1 : a > b ? 1 : 0;
+
 // spec §6.6, §6.5
+// One incident's per-member penalties at conviction epoch t, against the conviction-checkpoint
+// snapshot (§6.5: never recomputed as earlier hops apply). PENALTY_CAP_AGGREGATE across
+// incidents is not applied here. Path enumeration is bounded by the floor while g·w < 1; with
+// compounding kin stake it is bounded only by simple paths (§6.6 finding).
 export function transitivePenalties(
   edges: readonly VouchEdge[],
   convicted: string,
   t: number,
   snapshot: ReadonlyMap<string, bigint>,
 ): TransitivePenalty[] {
-  // Ignore edges with admittedAt > t
-  const validEdges = edges.filter((e) => e.admittedAt <= t);
+  // Ignore edges with admittedAt > t; sort deterministically
+  // (by voucher, then admittedAt, then linkageWeight)
+  const validEdges = edges
+    .filter((e) => e.admittedAt <= t)
+    .sort(
+      (a, b) =>
+        cmp(a.voucher, b.voucher) ||
+        cmp(a.admittedAt, b.admittedAt) ||
+        cmp(a.linkageWeight, b.linkageWeight),
+    );
 
-  // Sort edges deterministically (by voucher, then admittedAt, then linkageWeight)
-  validEdges.sort((a, b) => {
-    if (a.voucher !== b.voucher) return a.voucher < b.voucher ? -1 : 1;
-    if (a.admittedAt !== b.admittedAt)
-      return a.admittedAt < b.admittedAt ? -1 : 1;
-    return a.linkageWeight < b.linkageWeight ? -1 : 1;
-  });
-
-  // Build adjacency list for upward traversal
+  // Build adjacency list for upward traversal (vouchee -> edges into it)
   const adj: Map<string, VouchEdge[]> = new Map();
   for (const edge of validEdges) {
     if (!adj.has(edge.vouchee)) adj.set(edge.vouchee, []);
     adj.get(edge.vouchee)!.push(edge);
   }
 
-  // Track candidates for each member
-  const candidates: Map<string, TransitivePenalty> = new Map();
+  // Best uncapped candidate per member over all simple paths
+  const best: Map<string, TransitivePenalty> = new Map();
 
-  // DFS from convicted member
-  const visited = new Set<string>();
-  const stack: { member: string; path: string[]; weights: bigint[] }[] = [];
-
-  // Initialize stack with edges from convicted member
-  const initialEdges = adj.get(convicted) || [];
-  for (const edge of initialEdges) {
-    const w = decayedLinkage(edge, t);
-    if (w >= PENALTY_FLOOR) {
-      stack.push({
-        member: edge.voucher,
-        path: [edge.voucher, convicted],
-        weights: [edge.linkageWeight],
-      });
-    }
-  }
-
-  while (stack.length > 0) {
-    const { member, path, weights } = stack.pop()!;
-
-    // Avoid cycles
-    if (visited.has(member)) continue;
-    visited.add(member);
-
-    // Compute penalty fraction
-    const hop = weights.length - 1;
-    const fraction = penaltyFraction(hop, weights);
-
-    // Skip if below floor
-    if (fraction < PENALTY_FLOOR) continue;
-
-    // Cap fraction
-    const cappedFraction =
-      fraction < fx("PENALTY_CAP_PER_INCIDENT")
-        ? fraction
-        : fx("PENALTY_CAP_PER_INCIDENT");
-
-    // Compute amount
-    const amount = mul(cappedFraction, snapshot.get(member)!);
-
-    // Add to candidates, keeping the one with larger fraction, or smaller hop if equal
-    const existing = candidates.get(member);
-    if (
-      !existing ||
-      fraction > existing.fraction ||
-      (fraction === existing.fraction && hop < existing.hop)
-    ) {
-      candidates.set(member, {
-        member,
-        hop,
-        path,
-        fraction: cappedFraction,
-        amount,
-      });
-    }
-
-    // Continue DFS
-    const nextEdges = adj.get(member) || [];
-    for (const edge of nextEdges) {
+  // path runs from `member` down to the convicted; weights[0] is nearest the convicted
+  const walk = (member: string, path: string[], weights: bigint[]): void => {
+    for (const edge of adj.get(member) ?? []) {
+      if (path.includes(edge.voucher)) continue; // simple paths only
       const w = decayedLinkage(edge, t);
-      if (w >= PENALTY_FLOOR) {
-        stack.push({
+      if (w < PENALTY_FLOOR) continue;
+
+      const nextWeights = [...weights, w];
+      const hop = nextWeights.length - 1;
+      const fraction = penaltyFraction(hop, nextWeights);
+      if (fraction < PENALTY_FLOOR) continue;
+
+      const nextPath = [edge.voucher, ...path];
+      const cur = best.get(edge.voucher);
+      if (
+        !cur ||
+        fraction > cur.fraction ||
+        (fraction === cur.fraction && hop < cur.hop)
+      ) {
+        best.set(edge.voucher, {
           member: edge.voucher,
-          path: [edge.voucher, ...path],
-          weights: [edge.linkageWeight, ...weights],
+          hop,
+          path: nextPath,
+          fraction,
+          amount: 0n,
         });
       }
+      walk(edge.voucher, nextPath, nextWeights);
     }
-  }
+  };
+  walk(convicted, [convicted], []);
 
-  // Convert to array and sort by member id
-  const result = Array.from(candidates.values());
-  result.sort((a, b) => (a.member < b.member ? -1 : 1));
-
-  return result;
+  // Cap and compute amounts only after the search
+  const cap = fx("PENALTY_CAP_PER_INCIDENT");
+  return Array.from(best.values())
+    .map(({ member, hop, path, fraction }) => {
+      const capped = fraction < cap ? fraction : cap;
+      const r = snapshot.get(member);
+      if (r === undefined) throw new RangeError(`no snapshot for ${member}`);
+      return { member, hop, path, fraction: capped, amount: mul(capped, r) };
+    })
+    .sort((a, b) => cmp(a.member, b.member));
 }
