@@ -51,28 +51,32 @@ protected file changed.
   `src/index.ts` re-exports all modules (package `main`/`types` now resolve; tested). Gates:
   Python 22/22, engine 66/66, trace 113 tags.
 
+- 2026-10-10 (nightly 2): **game leftovers from "per-observer reputation query".**
+  `explainReputation` gains `excluded: {record, reason: 'over-budget' | 'self-issued'}[]`: Embers
+  to the member at or before t that carry no weight, in log order (property: counted ∪ excluded
+  = all of the member's Embers to t, disjoint). Answers for the game's other stubs, no engine
+  change needed: `contributionCredit` → `BASE_UNIT` from `params.ts` (0.08 reference value, tribe
+  policy, state it in the game); `directPenalty` → `P_dir` (0.25); `anchorStanding` →
+  `ANCHOR_INITIAL_REPUTATION` (0.50). Spec §5.2.1 said `BASE_UNIT` "has no default anywhere in
+  v5", contradicting §5.2 (S8) and App. D; reworded to "reference value, not a normative
+  default" (dated). Gates: Python 22/22, engine 66/66, trace 113 tags.
+
 ## Next
-1. **Game leftovers from "per-observer reputation query"** (embers `engine-shim.ts` stubs):
-   `contributionCredit` = `BASE_UNIT`, which has no default in v5 (tribe policy, §5.2.1), so the
-   game must pick and state one; `directPenalty` = `P_dir` (already in `params.ts`); `anchorStanding`
-   = `ANCHOR_INITIAL_REPUTATION`. Likely only a short note to the game, plus an optional
-   `excluded` list in `explainReputation` (over-budget and self-issued Embers to the member, with
-   reason) so the game can show "why didn't that count".
-2. **Spec: budget ordering across recipients.** §5.2 makes `sequence` per-recipient, but the
+1. **Spec: budget ordering across recipients.** §5.2 makes `sequence` per-recipient, but the
    overflow rule orders an issuer's whole epoch by `(sequence, record hash)`, so sequences from
    different recipients are compared. Deterministic (engine implements it as written), but
    meaningless as an order; consider an issuer-global sequence or `(record hash)` alone. Label it.
-3. **membership.ts (§4):** vouching, admission, voucher stake and slash, probation, expulsion.
+2. **membership.ts (§4):** vouching, admission, voucher stake and slash, probation, expulsion.
    Also the game's "vouch, admit and slash flow callable from a game tick".
-4. **adjudication.ts (§6).**
-5. **Spec: §9 rᵢ(T) derivation is undefined (high, §16 #14).** Define it so clients converge,
+3. **adjudication.ts (§6).**
+4. **Spec: §9 rᵢ(T) derivation is undefined (high, §16 #14).** Define it so clients converge,
    back it with a sim, then **federation.ts (§9)** plus the Appendix B worked example as a test.
-6. Spec hardening, high-severity open findings from HEARTH-v5-review.md, one per night:
+5. Spec hardening, high-severity open findings from HEARTH-v5-review.md, one per night:
    §10.2.1 partition semantics (#13); Noise pattern and PQ claims (#17); Sparks RSA-1 holder
    binding and budget time base (#15); Beacon StatusRecord signer field; Federation dispute
    defenses with no fields or slash rule; device-log freshness (#16).
-7. Sim debt: heterogeneous tribes for S8; C.6/C.7 seeds, CIs and `[sim:]` labels.
-8. Small spec cleanups found while transcribing App. D: `DISPUTE_ABUSE_THRESHOLD` and
+6. Sim debt: heterogeneous tribes for S8; C.6/C.7 seeds, CIs and `[sim:]` labels.
+7. Small spec cleanups found while transcribing App. D: `DISPUTE_ABUSE_THRESHOLD` and
    `THRESHOLD_ROOT_DEFAULT` are compound values written as prose (engine keeps them as text /
    list); `DORMANCY_MAX_DAYS`, `NULLIFIER_RETENTION_EPOCHS`, `VOUCH_INDEPENDENCE_HOPS` give no
    unit in the Default column; App. D says `δ` status "—" (engine maps it to `retired`). Give
@@ -121,3 +125,9 @@ protected file changed.
   applied by hand with three tidy-ups.
 - 2026-10-09: Strangers issuing an Ember is a `RangeError` in the engine (§5.2.1: budgets exist for
   Member+ only), not the sim's silent weight 0. The vectors exclude Stranger issuers.
+- 2026-10-10 (nightly 2): `excluded` covers only weightless Embers (over budget, self-issued),
+  not other recipients or Embers after t: those are not this member's transcript at t. Reason is
+  derived (issuer = recipient → self-issued, else over-budget) because `countedEmbers` drops
+  nothing else silently; malformed records still throw. Delegation: Qwen harness, ready after 1
+  repair with `--validation-cmd "npm --prefix engine ci && npm --prefix engine test"` (the
+  10-10 fix worked); its autoformatter rewrapped an unrelated line, undone in review.
