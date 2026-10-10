@@ -41,15 +41,23 @@ protected file changed.
   365 days; sim gained a no-op `trace` hook): max C rel err 1.0e-5 (tol 1e-3), weight 5.4e-7
   (tol 2.2e-5). Gates: Python 22/22, engine 58/58 in 4 s, trace 109 tags.
 
+- 2026-10-10 (nightly 1): **explain + observer view (game request "per-observer reputation
+  query").** `explainReputation(log, budgets, baseUnit, member, penalties, t)` in `ledger.ts`
+  returns the §5.5.3 computation transcript: each counted Ember (record with its weight factors,
+  `C`, weight, decayed value), each penalty decayed, `emberTotal`, `penaltyTotal`, and
+  `reputation` (= `memberReputation`, property-tested over 10 seeded logs × 5 members, each term
+  recomputed from its own factors). Doc comment: no per-observer score in §5; an observer's view
+  is this function over the observer's own log, provisional until the checkpoint. New
+  `src/index.ts` re-exports all modules (package `main`/`types` now resolve; tested). Gates:
+  Python 22/22, engine 66/66, trace 113 tags.
+
 ## Next
-1. **ledger.ts slice 2: explain + observer view (game request "per-observer reputation query").**
-   Add `explainReputation(log, budgets, baseUnit, member, penalties, t)` returning each counted
-   term (record, C, weight, decayed value) so the game can show "the events that drove it".
-   API docs must say: §5.1 `R_m` is one tribe-scoped value; an "observer's view" is that
-   observer's provisional recomputation over the Embers *they* have seen (§5.1, §5.5.2), i.e.
-   `memberReputation` over the observer's local log. No per-observer score in §5. Also export
-   `ledger.ts` from a package `index.ts` (package.json `main` points at a missing
-   `dist/src/index.js`).
+1. **Game leftovers from "per-observer reputation query"** (embers `engine-shim.ts` stubs):
+   `contributionCredit` = `BASE_UNIT`, which has no default in v5 (tribe policy, §5.2.1), so the
+   game must pick and state one; `directPenalty` = `P_dir` (already in `params.ts`); `anchorStanding`
+   = `ANCHOR_INITIAL_REPUTATION`. Likely only a short note to the game, plus an optional
+   `excluded` list in `explainReputation` (over-budget and self-issued Embers to the member, with
+   reason) so the game can show "why didn't that count".
 2. **Spec: budget ordering across recipients.** §5.2 makes `sequence` per-recipient, but the
    overflow rule orders an issuer's whole epoch by `(sequence, record hash)`, so sequences from
    different recipients are compared. Deterministic (engine implements it as written), but
@@ -103,5 +111,13 @@ protected file changed.
   blocked on ledger.ts (~200 lines, over the ~150-line slice guideline: should have been two
   tasks). The follow-up went to a Sonnet agent rather than a second Qwen round because Qwen's own
   loop had already spent its repairs, and the night's clock was short. Sonnet fixed it in 25 s.
+- 2026-10-10: the game's "signed standing" is **not** added to the engine: §5.1 floors `R_m` at 0
+  and there is no negative reputation in the spec. `explainReputation` exposes the unclamped
+  `emberTotal − penaltyTotal`, documented as a display aid only; "Distrusted" stays game-side.
+- 2026-10-10: delegation record. Qwen harness replies were malformed (2 format retries); opencode
+  produced a correct patch in 124 s, but the gate reported exit 127 because the isolated
+  worktree has no `engine/node_modules`. Next time use
+  `--validation-cmd "npm --prefix engine ci && npm --prefix engine test"`. Patch reviewed and
+  applied by hand with three tidy-ups.
 - 2026-10-09: Strangers issuing an Ember is a `RangeError` in the engine (§5.2.1: budgets exist for
   Member+ only), not the sim's silent weight 0. The vectors exclude Stranger issuers.
