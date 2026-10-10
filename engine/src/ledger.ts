@@ -3,6 +3,7 @@ import { REP_SCALE, LAMBDA, mul } from "./fixed.js";
 import {
   emberWeight,
   reputation,
+  decayedTerm,
   type Tier,
   type Context,
   type Term,
@@ -28,6 +29,24 @@ export interface Weighted {
   record: EmberRecord;
   C: bigint;
   weight: bigint;
+}
+
+export interface ExplainedEmber extends Weighted {
+  decayed: bigint;
+}
+
+export interface ExplainedPenalty extends Term {
+  decayed: bigint;
+}
+
+export interface Explanation {
+  member: string;
+  t: number;
+  embers: ExplainedEmber[];
+  penalties: ExplainedPenalty[];
+  emberTotal: bigint;
+  penaltyTotal: bigint;
+  reputation: bigint;
 }
 
 // spec §13.6 — pow(LAMBDA, k) as a table of the same left fold, so identical by construction
@@ -211,4 +230,42 @@ export function memberReputation(
 
   // Calculate reputation
   return reputation(terms, penalties, t);
+}
+
+// spec §5.1, §5.5.2, §5.5.3 — computation transcript for one member: every counted Ember and
+// penalty with its weight factors and decayed value. `reputation` equals memberReputation.
+// R_m is one tribe-scoped value; there is no per-observer score. An observer's view is this
+// function over the Embers that observer has seen (its own log), provisional until the next
+// checkpoint (§5.1). `emberTotal − penaltyTotal` before the §5.1 floor is a display aid only.
+export function explainReputation(
+  log: readonly EmberRecord[],
+  budgets: Budgets,
+  baseUnit: bigint,
+  member: string,
+  penalties: readonly Term[],
+  t: number,
+): Explanation {
+  const embers = checkpointWeights(log, budgets, baseUnit)
+    .filter((x) => x.record.recipient === member && x.record.epoch <= t)
+    .map((x) => ({ ...x, decayed: decayedTerm(x.weight, x.record.epoch, t) }));
+
+  const explained = penalties.map((p) => ({
+    weight: p.weight,
+    epoch: p.epoch,
+    decayed: decayedTerm(p.weight, p.epoch, t),
+  }));
+
+  const emberTotal = embers.reduce((sum, e) => sum + e.decayed, 0n);
+  const penaltyTotal = explained.reduce((sum, p) => sum + p.decayed, 0n);
+  const net = emberTotal - penaltyTotal;
+
+  return {
+    member,
+    t,
+    embers,
+    penalties: explained,
+    emberTotal,
+    penaltyTotal,
+    reputation: net < 0n ? 0n : net,
+  };
 }
