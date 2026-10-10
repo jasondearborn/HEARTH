@@ -25,6 +25,13 @@ export type Budgets = Readonly<
   Record<"Member" | "Trusted" | "Steward-eligible", number>
 >;
 
+export type ExclusionReason = "over-budget" | "self-issued";
+
+export interface ExcludedEmber {
+  record: EmberRecord;
+  reason: ExclusionReason;
+}
+
 export interface Weighted {
   record: EmberRecord;
   C: bigint;
@@ -43,6 +50,7 @@ export interface Explanation {
   member: string;
   t: number;
   embers: ExplainedEmber[];
+  excluded: ExcludedEmber[];
   penalties: ExplainedPenalty[];
   emberTotal: bigint;
   penaltyTotal: bigint;
@@ -237,6 +245,9 @@ export function memberReputation(
 // R_m is one tribe-scoped value; there is no per-observer score. An observer's view is this
 // function over the Embers that observer has seen (its own log), provisional until the next
 // checkpoint (§5.1). `emberTotal − penaltyTotal` before the §5.1 floor is a display aid only.
+// `excluded` lists Embers to the member at or before t that carry no weight, in log order:
+// over the issuer's epoch budget (§5.2.1) or self-issued (invalid, §5.2). Embers after t are
+// in neither list.
 export function explainReputation(
   log: readonly EmberRecord[],
   budgets: Budgets,
@@ -245,9 +256,25 @@ export function explainReputation(
   penalties: readonly Term[],
   t: number,
 ): Explanation {
-  const embers = checkpointWeights(log, budgets, baseUnit)
+  const counted = checkpointWeights(log, budgets, baseUnit);
+  const countedRecords = new Set(counted.map((x) => x.record));
+
+  const embers = counted
     .filter((x) => x.record.recipient === member && x.record.epoch <= t)
     .map((x) => ({ ...x, decayed: decayedTerm(x.weight, x.record.epoch, t) }));
+
+  const excluded = log
+    .filter(
+      (record) =>
+        record.recipient === member &&
+        record.epoch <= t &&
+        !countedRecords.has(record),
+    )
+    .map((record) => {
+      const reason: ExclusionReason =
+        record.issuer === record.recipient ? "self-issued" : "over-budget";
+      return { record, reason };
+    });
 
   const explained = penalties.map((p) => ({
     weight: p.weight,
@@ -263,6 +290,7 @@ export function explainReputation(
     member,
     t,
     embers,
+    excluded,
     penalties: explained,
     emberTotal,
     penaltyTotal,
