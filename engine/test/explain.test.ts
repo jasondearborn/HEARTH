@@ -42,15 +42,18 @@ test('explain excludes over-budget, self-issued, other recipients and future Emb
   const late = rec({ epoch: 3, sequence: 0 });
   const early = rec({ epoch: 0, sequence: 0 });
   const second = rec({ epoch: 0, sequence: 1 });
+  const over = rec({ epoch: 0, sequence: 2 }); // over Member budget (2)
+  const self = rec({ epoch: 1, sequence: 0, issuer: 'b' }); // self-issued
   const log = [
-    late, early, second,
-    rec({ epoch: 0, sequence: 2 }), // over Member budget (2)
-    rec({ epoch: 1, sequence: 0, issuer: 'b' }), // self-issued
+    late, early, second, over, self,
     rec({ epoch: 1, sequence: 1, recipient: 'c' }),
     rec({ epoch: 7, sequence: 0 }), // after t
   ];
   const x = explainReputation(log, BUDGETS, BASE, 'b', [], 4);
   assert.deepEqual(x.embers.map((e) => e.record), [late, early, second]);
+  // §5.2.1 budget overflow and self-issue (threat row 45) are reported, with reason, in log
+  // order; other recipients and Embers after t are not "excluded", just not this transcript's
+  assert.deepEqual(x.excluded, [{ record: over, reason: 'over-budget' }, { record: self, reason: 'self-issued' }]);
   assert.deepEqual(x.penalties, []);
   assert.equal(x.penaltyTotal, 0n);
 });
@@ -68,7 +71,8 @@ test('explain keeps the unclamped totals; only reputation takes the §5.1 floor'
 test('explain for a member with no Embers is empty and zero', () => {
   const x = explainReputation([rec({ epoch: 0, sequence: 0 })], BUDGETS, BASE, 'nobody', [], 5);
   assert.deepEqual(x, {
-    member: 'nobody', t: 5, embers: [], penalties: [], emberTotal: 0n, penaltyTotal: 0n, reputation: 0n,
+    member: 'nobody', t: 5, embers: [], excluded: [], penalties: [], emberTotal: 0n, penaltyTotal: 0n,
+    reputation: 0n,
   });
 });
 
@@ -122,6 +126,13 @@ test('property: every transcript recomputes to memberReputation from its own wei
         sum += e.decayed;
       }
       assert.equal(x.emberTotal, sum);
+      // every Ember to m at or before t is either counted or excluded, never both, in log order
+      const mine = log.filter((y) => y.recipient === m && y.epoch <= 30);
+      const counted = new Set(x.embers.map((e) => e.record));
+      assert.deepEqual(x.excluded.map((e) => e.record), mine.filter((y) => !counted.has(y)));
+      for (const e of x.excluded) {
+        assert.equal(e.reason, e.record.issuer === m ? 'self-issued' : 'over-budget');
+      }
       const net = x.emberTotal - x.penaltyTotal;
       assert.equal(x.reputation, net < 0n ? 0n : net);
       assert.equal(x.reputation, memberReputation(log, BUDGETS, BASE, m, pen, 30));
