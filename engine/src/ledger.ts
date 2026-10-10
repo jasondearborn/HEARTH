@@ -60,8 +60,7 @@ export interface Explanation {
 // spec §13.6 — pow(LAMBDA, k) as a table of the same left fold, so identical by construction
 const LAMBDA_POW: bigint[] = [REP_SCALE];
 function lambdaPow(k: number): bigint {
-  while (LAMBDA_POW.length <= k)
-    LAMBDA_POW.push(mul(LAMBDA_POW[LAMBDA_POW.length - 1]!, LAMBDA));
+  while (LAMBDA_POW.length <= k) LAMBDA_POW.push(mul(LAMBDA_POW[LAMBDA_POW.length - 1]!, LAMBDA));
   return LAMBDA_POW[k]!;
 }
 
@@ -246,6 +245,9 @@ export function memberReputation(
 // R_m is one tribe-scoped value; there is no per-observer score. An observer's view is this
 // function over the Embers that observer has seen (its own log), provisional until the next
 // checkpoint (§5.1). `emberTotal − penaltyTotal` before the §5.1 floor is a display aid only.
+// `excluded` lists Embers to the member at or before t that carry no weight, in log order:
+// over the issuer's epoch budget (§5.2.1) or self-issued (invalid, §5.2). Embers after t are
+// in neither list.
 export function explainReputation(
   log: readonly EmberRecord[],
   budgets: Budgets,
