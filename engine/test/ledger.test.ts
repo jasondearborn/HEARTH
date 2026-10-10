@@ -167,7 +167,7 @@ test('identifiers containing separators never collide (pairs and budget groups)'
 });
 
 test('API exposes no tribe-wide or cross-tribe aggregate (anti-goal: no global score)', () => {
-  assert.deepEqual(Object.keys(ledger).sort(), ['checkpointWeights', 'countedEmbers', 'memberReputation']);
+  assert.deepEqual(Object.keys(ledger).sort(), ['checkpointWeights', 'countedEmbers', 'explainReputation', 'memberReputation']);
 });
 
 // ---- property tests: seeded, deterministic (mulberry32) ----
