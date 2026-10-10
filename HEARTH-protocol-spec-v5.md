@@ -979,6 +979,16 @@ On conviction: the bad actor's reputation is zeroed with a re-accrual cooldown, 
 - **Caps:** `PENALTY_CAP_PER_INCIDENT` is applied after the multiplication (see the interaction disclosed in §4.5).
 - **Ordering:** convictions finalised in the same epoch are ordered by conviction-record hash when applying `PENALTY_CAP_AGGREGATE`.
 
+**Computation (normative, added 2026-10-10 while building the reference engine).** §6.5 requires identical amounts from every implementation; the rules above leave the arithmetic open. A conforming Steward set computes one incident's per-member penalties as follows (fixed point per §13.6). `[UNPROVEN]`: definitional; nothing here is sim-backed beyond the gradient (A.2).
+1. **Edges.** The vouch graph is every accepted VouchRecord with `admitted_at` ≤ `t`, where `t` is the conviction epoch (§6.5). Parallel edges (the same voucher re-admitting the same vouchee) are separate edges. Each edge's weight at `t` is `mul(linkage_weight, pow(λ_L, t − admitted_at))`, where `λ_L` is λ of §13.6 rule 4 with `H` replaced by `LINKAGE_HALF_LIFE` (equal to `LAMBDA` at the default). An edge whose weight at `t` is below the floor 0.01 carries no exposure and is not traversed (§4.7).
+2. **Paths.** Paths run upward from the convicted member along vouch edges (vouchee to voucher) and are simple: no member appears twice, and the convicted member is never penalised by this rule. A voucher at the end of a path of `h + 1` edges is at hop `h`.
+3. **Fraction.** For one path, `fraction = P_dir × pow(g, h) × w₁ × … × w_{h+1}`, folded left to right with rounding at each step (§13.6 rule 5), where `pow(g, h)` is the §13.6 rule 4 left fold with base `g`, and `w₁` is the edge nearest the convicted member.
+4. **Floor.** A path whose fraction is below 0.01 is not applied and is not extended further ("propagation stops").
+5. **Multiple paths and cap.** A member's fraction is the largest over all its paths (not summed); its hop is that path's hop (smallest hop on a tie). Then `PENALTY_CAP_PER_INCIDENT` is applied: `min(fraction, cap)`.
+6. **Amount.** The amount is `mul(fraction, R)`, with `R` the member's reputation in the conviction checkpoint (§6.5).
+
+*Finding (non-normative, 2026-10-10).* "~3 effective hops" assumes every edge weight is at most 1. Compounding kin stake (§4.5) breaks that: from the third repeat kin-admission (`KIN_STAKE_MULT³` = 3.375) `g × w` exceeds 1, so along a chain of such edges the fraction *grows* with each hop instead of falling, and only the per-incident cap and the simple-path rule bound how far it spreads. Whether that is wanted (a kin cluster shares liability throughout) or a defect is open; `[UNPROVEN]` either way, recorded as an open question in BACKLOG.md.
+
 With `LINKAGE_INITIAL` = 1.0 and no decay, this reduces to the table below. `[UNPROVEN]` for the composition; the gradient itself is sim-backed (A.2).
 
 | Hop | Penalty (fraction of that member's conviction-checkpoint rep) |

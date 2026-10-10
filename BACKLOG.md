@@ -61,7 +61,27 @@ protected file changed.
   v5", contradicting §5.2 (S8) and App. D; reworded to "reference value, not a normative
   default" (dated). Gates: Python 22/22, engine 66/66, trace 113 tags.
 
+- 2026-10-10 (nightly 3): **transitive penalty, spec then engine (game request "transitive vouch
+  penalty").** Spec §6.6 gains "Computation (normative)" `[UNPROVEN]`, definitional: edges with
+  `admitted_at ≤ t`, decayed linkage per §4.7 (edge below 0.01 not traversed), simple upward
+  paths, fold order `P_dir × pow(g,h) × w₁…w_{h+1}` nearest-first, floor stops a path, max over
+  paths then `PENALTY_CAP_PER_INCIDENT`, amount against the §6.5 snapshot. Finding written in
+  §6.6: from the 3rd repeat kin-admission (`KIN_STAKE_MULT³` = 3.375) `g·w > 1`, so the fraction
+  grows with each hop and "~3 effective hops" fails; only the cap and simple paths bound it.
+  `src/penalty.ts`: `decayedLinkage`, `penaltyFraction`, `transitivePenalties` (16 tests incl. the
+  §6.6 table, an operand-order-sensitive case, max-not-sum, cycles, edge-order independence).
+  Game: `voucherPenalty()` → `transitivePenalties(...)`; amount for a member is `.amount`.
+  Gates: Python 22/22, engine 81/81, trace 118 tags.
+
 ## Next
+0. **Game: admission check** (Embers request): ≥2 vouchers, budget, §4.5 independence, as a pure
+   function the game can call. First slice of membership.ts (item 2).
+0b. **engine: `PENALTY_CAP_AGGREGATE`** (§6.6): clip a member's propagated losses across
+   incidents in a rolling 30 epochs, conviction order, same-epoch by conviction-record hash. Small
+   function over `transitivePenalties` outputs.
+0c. **Spec open question: kin stake vs. penalty depth** (§6.6 finding, 2026-10-10). Decide whether
+   per-edge weight should be capped at 1/g, the path fraction made non-increasing, or the spread
+   accepted (threat-model row either way). Back the choice with a small sim.
 1. **Spec: budget ordering across recipients.** §5.2 makes `sequence` per-recipient, but the
    overflow rule orders an issuer's whole epoch by `(sequence, record hash)`, so sequences from
    different recipients are compared. Deterministic (engine implements it as written), but
@@ -81,6 +101,9 @@ protected file changed.
    list); `DORMANCY_MAX_DAYS`, `NULLIFIER_RETENTION_EPOCHS`, `VOUCH_INDEPENDENCE_HOPS` give no
    unit in the Default column; App. D says `δ` status "—" (engine maps it to `retired`). Give
    each a structured default, and make the App. D reuse references explicit (its own note).
+   Also (2026-10-10): the §6.6/§4.7 penalty floor 0.01 has no App. D name (engine:
+   `PENALTY_FLOOR` literal); `LINKAGE_HALF_LIFE` ≠ `H` needs its own λ (engine supports only the
+   default, `LAMBDA`).
 
 ## Decisions
 - 2026-10-09: reference engine in TypeScript, so the browser game and future clients share one
@@ -131,3 +154,12 @@ protected file changed.
   nothing else silently; malformed records still throw. Delegation: Qwen harness, ready after 1
   repair with `--validation-cmd "npm --prefix engine ci && npm --prefix engine test"` (the
   10-10 fix worked); its autoformatter rewrapped an unrelated line, undone in review.
+- 2026-10-10 (nightly 3): took the game's transitive-penalty request ahead of Next #1 (spec
+  budget ordering): small, and it replaces a game stub. The floor applies to the per-path
+  fraction *and* (§4.7) to each decayed edge; the edge rule only bites when another edge weighs
+  over ~1/(P_dir·g^h), but it is what §4.7 says. Max is taken on the uncapped fraction (cap
+  after, per §6.6 "Caps"); ties keep the smaller hop. A missing snapshot entry throws, since §6.5
+  needs that value. Delegation: Qwen harness malformed twice, opencode timed out (400 s) with
+  76/81 passing; the Qwen test-fix follow-up stayed blocked after 2 repairs; a Sonnet agent fixed
+  the search in 30 s (its sandbox could not run npm; the gate was run here). Lesson: graph search
+  with path-sensitive state is a poor Qwen slice; send it to Sonnet first.
