@@ -25,6 +25,13 @@ export type Budgets = Readonly<
   Record<"Member" | "Trusted" | "Steward-eligible", number>
 >;
 
+export type ExclusionReason = "over-budget" | "self-issued";
+
+export interface ExcludedEmber {
+  record: EmberRecord;
+  reason: ExclusionReason;
+}
+
 export interface Weighted {
   record: EmberRecord;
   C: bigint;
@@ -43,6 +50,7 @@ export interface Explanation {
   member: string;
   t: number;
   embers: ExplainedEmber[];
+  excluded: ExcludedEmber[];
   penalties: ExplainedPenalty[];
   emberTotal: bigint;
   penaltyTotal: bigint;
@@ -52,7 +60,8 @@ export interface Explanation {
 // spec §13.6 — pow(LAMBDA, k) as a table of the same left fold, so identical by construction
 const LAMBDA_POW: bigint[] = [REP_SCALE];
 function lambdaPow(k: number): bigint {
-  while (LAMBDA_POW.length <= k) LAMBDA_POW.push(mul(LAMBDA_POW[LAMBDA_POW.length - 1]!, LAMBDA));
+  while (LAMBDA_POW.length <= k)
+    LAMBDA_POW.push(mul(LAMBDA_POW[LAMBDA_POW.length - 1]!, LAMBDA));
   return LAMBDA_POW[k]!;
 }
 
@@ -245,9 +254,25 @@ export function explainReputation(
   penalties: readonly Term[],
   t: number,
 ): Explanation {
-  const embers = checkpointWeights(log, budgets, baseUnit)
+  const counted = checkpointWeights(log, budgets, baseUnit);
+  const countedRecords = new Set(counted.map((x) => x.record));
+
+  const embers = counted
     .filter((x) => x.record.recipient === member && x.record.epoch <= t)
     .map((x) => ({ ...x, decayed: decayedTerm(x.weight, x.record.epoch, t) }));
+
+  const excluded = log
+    .filter(
+      (record) =>
+        record.recipient === member &&
+        record.epoch <= t &&
+        !countedRecords.has(record),
+    )
+    .map((record) => {
+      const reason: ExclusionReason =
+        record.issuer === record.recipient ? "self-issued" : "over-budget";
+      return { record, reason };
+    });
 
   const explained = penalties.map((p) => ({
     weight: p.weight,
@@ -263,6 +288,7 @@ export function explainReputation(
     member,
     t,
     embers,
+    excluded,
     penalties: explained,
     emberTotal,
     penaltyTotal,
