@@ -71,7 +71,7 @@ export function independent(
   return true;
 }
 
-/** §4.5 kin stake multiplier: 1.5, then 2.25, compounding per repeat (n = repetition count). */
+/** §4.5 raw kin-stake power `KIN_STAKE_MULT^n` (1.5^n, so `kinStakeMult(0) = 1.0`). */
 export function kinStakeMult(n: number): bigint {
   if (n < 0) throw new RangeError("kin repeat count must be non-negative");
   const step = fx("KIN_STAKE_MULT");
@@ -83,10 +83,12 @@ export function kinStakeMult(n: number): bigint {
 /**
  * §4.5 escalation 2(ii): the vouchers' linkage weight (§4.7) raised by the kin stake multiplier
  * for this vouchee. `repeatCount` is the 0-based repetition count of kin-admissions by the same
- * voucher pair within KIN_REPEAT_WINDOW (§4.5).
+ * voucher pair (`0` = the first kin admission of this pair) within KIN_REPEAT_WINDOW (§4.5); the
+ * result is `decayedLinkage(edge, t) × KIN_STAKE_MULT^(repeatCount + 1)`, i.e. 1.5×, then 2.25×,
+ * compounding per repetition.
  */
 export function kinLinkageWeight(edge: VouchEdge, t: number, repeatCount: number): bigint {
-  return mul(decayedLinkage(edge, t), kinStakeMult(repeatCount));
+  return mul(decayedLinkage(edge, t), kinStakeMult(repeatCount + 1));
 }
 
 /** §4.5 KIN_PROBATION: epochs during which a kin admittee takes no trust-conferring action. */
