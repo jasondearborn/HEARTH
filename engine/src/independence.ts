@@ -54,7 +54,8 @@ export function admittingSet(edges: readonly VouchEdge[], id: string): string[] 
     .sort();
 }
 
-/** §4.5 (a)+(b) together. */
+/** §4.5 (a)+(b) together. Empty admitting sets (founders, and members admitted before the
+ * check existed) do not count as "identical groups": the rule targets clustered duplicates. */
 export function independent(
   graph: VouchGraph,
   v1: string,
@@ -64,8 +65,9 @@ export function independent(
   admit2: readonly string[],
 ): boolean {
   if (!hopIndependent(graph, v1, v2, h)) return false;
-  // Not identical: the documented duplicate-groups attack [BRIGHTID] mirrors voucher sets.
-  if (admit1.length === admit2.length && admit1.every((x, i) => x === admit2[i])) return false;
+  if (admit1.length > 0 && admit2.length > 0 && admit1.length === admit2.length && admit1.every((x, i) => x === admit2[i])) {
+    return false; // identical admit groups: the documented duplicate-groups attack [BRIGHTID]
+  }
   return true;
 }
 

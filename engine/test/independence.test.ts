@@ -71,6 +71,8 @@ test('independent: both checks together', () => {
   const e2: VouchEdge[] = [...edges.map((x) => edge(x.voucher, x.vouchee)), edge('k', 'y'), edge('k', 'v')];
   const g2 = buildVouchGraph(e2);
   assert.equal(independent(g2, 'y', 'v', 2, ['k'], ['k']), false); // identical admit sets
+  // Empty admitting sets are founders: the (b) check does not fire between them.
+  assert.equal(independent(buildVouchGraph([]), 'm', 'n', 2, [], []), true);
   assert.equal(independent(g2, 'd', 'y', 2, ['a'], ['k']), true); // disjoint components, different sets
 });
 
