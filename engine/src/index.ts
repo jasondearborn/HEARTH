@@ -2,5 +2,6 @@
 export * from "./fixed.js";
 export * from "./params.js";
 export * from "./embers.js";
+export * from "./independence.js";
 export * from "./ledger.js";
 export * from "./penalty.js";

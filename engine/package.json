@@ -13,7 +13,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "trace": "node scripts/check-trace.mjs",
-    "test": "tsc -p tsconfig.json && node --test dist/test/ scripts/ && node scripts/check-trace.mjs"
+    "test": "tsc -p tsconfig.json && node --test dist/test/*.test.js scripts/*.test.mjs && node scripts/check-trace.mjs"
   },
   "devDependencies": {
     "@types/node": "^18.19.0",
