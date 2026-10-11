@@ -29,6 +29,7 @@ delete a documented failure.
 | `hearth_v5_sim.py` | Current simulations | Sim work only |
 | `engine/` | TypeScript reference engine (in progress) | Engine work; see BACKLOG.md |
 | `BACKLOG.md` | State, next tasks, decisions (nightly queue) | Start of every task |
+| `HANDOFF.md` | Director/worker protocol for opencode issues and PRs | Before any issue work |
 | `hearth_v3_sim.py`, `hearth_federation_sim.py` | Historical sims. Frozen. | Almost never |
 | `*_sim_results.json` | Raw sim output | **Never read raw** — see Simulations |
 
@@ -130,6 +131,14 @@ Rules:
 Enforcement note: this section is policy. If using Claude Code, bind it in
 `.claude/agents/*.md` subagent definitions (each pins a `model:` field) so
 tier selection is configuration, not compliance.
+
+## Handoff with directors (opencode workers)
+
+If you are an opencode worker on a GitHub issue, `HANDOFF.md` is your protocol: claim, work on
+`task/<n>-<slug>`, check in often, open a PR, set `agent:review`, stop. It overrides the
+model-tiering section above (that section is for Claude Code sessions). The rules in this file
+still apply to your edits: evidence labels, frozen files, and no normative spec changes without
+a director. A design question is a `HANDOFF: BLOCKED`, never a guess.
 
 ## Editing hygiene
 
