@@ -84,18 +84,16 @@ test('parameters carry their App. D names and defaults', () => {
   assert.equal(kinStakeMult(2), fp('2.25'));
 });
 
-test('kinLinkageWeight scales the decayed linkage by the compounding multiplier', () => {
+test('kinLinkageWeight: the first kin admission (count 0) is 1.5x, the second 2.25x (§4.5, issue #1)', () => {
   const e = edge('a', 'b', { admittedAt: T });
-  const base = fp('1.0');
-  const w = kinLinkageWeight(e, T, 1);
-  // 1.0 × 1.5 (REP_SCALE rounding): 1.5 within tolerance
-  const diff = w - fp('1.5');
-  assert.ok(diff < 1000n && diff > -1000n, `kin weight ${w}`);
-  // Second repeat of the same pair: 2.25
-  const w2 = kinLinkageWeight(e, T, 2);
-  const diff2 = w2 - fp('2.25');
-  assert.ok(diff2 < 3000n && diff2 > -3000n, `kin weight 2 ${w2}`);
-  void base;
+  // repeatCount is 0-based: 0 = first kin admission of this voucher pair → KIN_STAKE_MULT^1
+  const w0 = kinLinkageWeight(e, T, 0);
+  const d0 = w0 - fp('1.5');
+  assert.ok(d0 < 1000n && d0 > -1000n, `first kin weight ${w0}`);
+  // 1 = second kin admission by the same pair → KIN_STAKE_MULT^2
+  const w1 = kinLinkageWeight(e, T, 1);
+  const d1 = w1 - fp('2.25');
+  assert.ok(d1 < 3000n && d1 > -3000n, `second kin weight ${w1}`);
 });
 
 test('REP_SCALE remains 1e6 and the graph is undirected (§4.5 note)', () => {
