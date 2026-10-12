@@ -202,6 +202,13 @@ The **epoch** is the tribe's checkpoint period. `(Parameter: EPOCH_LEN, default 
 refresh and nullifier scoping (§7), complaint and vouch rate-limits (§4–§6). A protocol with one epoch
 has one staleness story; mechanisms MUST NOT invent private cadences.
 
+**Windows (normative, added 2026-10-12).** A parameter given in days is a count of epochs (at the
+default `EPOCH_LEN`, one day is one epoch). A **rolling `W`-epoch window ending at epoch `t`** is the
+set of epochs `e` with `t − W < e ≤ t` (exactly `W` epochs, including `t`). An event "within the
+window" is one whose record epoch lies in that set. `[UNPROVEN]`: definitional, chosen so that every
+implementation counts the same events at the edges of a window; the reference engine uses it
+throughout.
+
 ---
 
 ## 3. Identity & devices
@@ -515,6 +522,8 @@ A prospective member is admitted to a tribe when ≥2 existing Member-tier-or-ab
 
 **Issuance budget.** Admission vouching is a higher-stakes, lower-frequency action than ordinary Ember issuance (§5.2) and is budgeted separately, over a rolling window rather than the 24 h protocol epoch: a member may issue at most `B_VOUCH` admission vouches per rolling `VOUCH_WINDOW`-epoch window. (Parameter: `B_VOUCH`, default 2, status: sim-backed, evidence: Appendix A.4, carried v3/v4 as "2 vouches per member per 30-day epoch," re-expressed here against a rolling ~30-epoch window because v5 unifies all epochs to the 24 h reputation-checkpoint epoch, §2. Parameter: `VOUCH_WINDOW`, default 30 epochs (~30 days), status: sim-backed, evidence: Appendix A.4.) This bounds sybil-farm throughput per compromised Member-tier account (§6.8) independent of how many hours per day the account is active.
 
+**Budget evaluation (normative, added 2026-10-12).** A vouch counts against its voucher's budget when it is part of an accepted AdmissionRecord; the vouch's epoch is its VouchRecord `epoch`. A Steward relay MUST reject an AdmissionRecord in which any voucher, counting this record's vouch, would have more than `B_VOUCH` counted vouches in the rolling `VOUCH_WINDOW`-epoch window (§2.4) ending at this vouch's epoch. Voucher tier is read from the latest CheckpointRecord (§4.2). `[UNPROVEN]`: definitional.
+
 ### 4.4 The proximity QR challenge and the AdmissionRecord
 
 Vouching is **in-person-first**. The mechanism:
@@ -562,6 +571,8 @@ The ≥2 vouchers for a given AdmissionRecord are checked for independence. Let 
   1. **Third outside voucher.** An additional voucher from outside both V₁'s and V₂'s h-hop neighborhoods co-signs the admission; or
   2. **Kin-admission probation.** The admission proceeds with (i) an extended probation on the admittee — no trust-conferring actions (vouching, endorsing, Spark minting (§7), complaint weight above Stranger level) for `KIN_PROBATION` epochs regardless of reputation crossed (Parameter: `KIN_PROBATION`, default 45 epochs, status: provisional, evidence: none), and (ii) both vouchers' `linkage_weight` (§4.7) raised by a factor `KIN_STAKE_MULT` (Parameter: default 1.5, status: provisional), increasing their transitive-penalty exposure for this vouchee.
 - A Steward relay MUST reject an AdmissionRecord that fails the independence check and carries neither escalation.
+
+**Which pair, and how escalations are read (normative, added 2026-10-12).** V₁ and V₂ are the vouchers of the first two vouches in the AdmissionRecord's `vouches` list (the submitter chooses the order, so an admission with any independent pair can put it first). Escalation 1 is met when some later vouch in the list has a voucher that is hop-independent (rule (a)) of both V₁ and V₂. Escalation 2 applies only when escalation 1 is not met; the record is then a kin-admission, and the neighborhood rate bound below and the probation and stake of escalation 2 apply. The vouch graph for both checks is the graph as of the current checkpoint, which does not yet contain this record's vouches. `[UNPROVEN]`: definitional.
 
 **Neighborhood rate bound.** "Neighborhood" is not a fixed partition of the graph (every member has their own h-hop ball), so the bound is defined per admission, deterministically: a Steward relay MUST reject a kin-admission (escalation 2) if any kin-admission accepted in the preceding `KIN_NEIGHBORHOOD_WINDOW` epochs (Parameter, default 30 epochs, status: provisional, evidence: none) had a voucher within h hops (h = `VOUCH_INDEPENDENCE_HOPS`, measured in the vouch graph as of the current checkpoint) of either V₁ or V₂. This bounds cluster growth *rate* directly, independent of stake: a cluster cannot simply pay a higher multiplier to push more sybils through escalation 2 faster, because the neighborhood cap is a hard limit on frequency, not a price.
 
@@ -636,6 +647,7 @@ A member may declare dormancy via a DormancyDeclaration. While dormant: decay pa
 
 - **Maximum dormancy:** ≤ `DORMANCY_MAX_DAYS` per rolling `DORMANCY_ROLLING_WINDOW`. (Parameter: `DORMANCY_MAX_DAYS`, default 180, status: sim-backed, evidence: Appendix A.6 (S2). Parameter: `DORMANCY_ROLLING_WINDOW`, default 365 days, status: sim-backed, evidence: Appendix A.6.)
 - **Cooldown between declarations:** ≥ `DORMANCY_COOLDOWN` between the end of one dormancy period and the start of the next. (Parameter: `DORMANCY_COOLDOWN`, default 60 days, status: sim-backed, evidence: Appendix A.6 — simulation recorded **zero** dormancy vouch-leaks across every seed and chill level: an agent cycling dormancy never appears in the vouch-eligible pool while dormant.) This closes the cycling-dormancy abuse this rule exists to stop.
+- **Evaluation (normative, added 2026-10-12).** A dormancy period covers epochs `start ≤ e < end`. A Steward relay MUST reject a DormancyDeclaration whose period, together with the member's earlier periods, puts more than `DORMANCY_MAX_DAYS` dormant epochs in any rolling `DORMANCY_ROLLING_WINDOW` (§2.4), or that starts fewer than `DORMANCY_COOLDOWN` epochs after the end of the member's previous period, or that overlaps an earlier period. `[UNPROVEN]`: definitional; A.6 simulated the limits, not this edge handling.
 - **Re-entry probation:** on return from dormancy, high-value actions (vouching, endorsing, Steward candidacy) are rate-limited for a probation window (Parameter: `DORMANCY_PROBATION`, default 14 days, status: provisional, evidence: none — mirrors D1's new-device probation pattern, §3).
 
 ### 4.11 Tribe-schism semantics
@@ -1002,6 +1014,12 @@ With `LINKAGE_INITIAL` = 1.0 and no decay, this reduces to the table below. `[UN
 **Guards:** Anchors are exempt (§4.1 — they have no vouch edge to propagate penalty across unless they themselves vouched someone in, in which case they are liable exactly as any voucher would be for that specific vouch). Per-member per-incident loss is capped so one deep bad actor cannot compound across multiple convictions in a short window (Parameter: `PENALTY_CAP_PER_INCIDENT`, default 0.30 of conviction-checkpoint reputation, status: provisional, evidence: none). Gradient `g` is tunable in 0.20–0.40 — a pure *spread* knob that does not change the direct-voucher hit (Appendix A.2). (Parameter: `P_dir`, default 0.25, status: sim-backed, evidence: Appendix A.2. Parameter: `g`, default 0.35, status: sim-backed, evidence: Appendix A.2, tunable range 0.20–0.40.)
 
 **Aggregate cap across independent incidents.** `PENALTY_CAP_PER_INCIDENT` bounds one incident's loss, but nothing about it bounds the *sum* of losses a member takes from multiple, independent convictions reaching quorum in the same rolling window — a capture faction already at the ~20–25% quorum-capture fraction documented in §6.3 could wrongfully convict several different vouchees who happen to share the same upstream voucher, stacking that voucher's hop-0/hop-1 penalties with no ceiling across incidents. To close this: total propagated-penalty loss a member takes as a voucher (hop ≥ 0, i.e. from convictions of *others* they vouched for, directly or transitively) MUST NOT exceed `PENALTY_CAP_AGGREGATE` (Parameter, default 0.40 of conviction-checkpoint reputation per rolling 30 epochs, status: provisional) within that window; excess penalties are clipped, applied in conviction order (earliest-convicted incident's penalty is applied in full first, later incidents' penalties are clipped against whatever headroom remains). A member's own conviction — their reputation being zeroed as the convicted party, not as an upstream voucher — is exempt from `PENALTY_CAP_AGGREGATE`; the aggregate cap protects a voucher from compounding exposure to *others'* misconduct, not a bad actor from the consequence of their own. This closes the gap where a capture faction stacks multiple wrongful convictions specifically to destroy one shared voucher.
+
+**Aggregate cap computation (normative, added 2026-10-12).** `[UNPROVEN]`: definitional, nothing here is simulated. The cap is kept in *fractions*, because each incident's amount is taken against its own conviction checkpoint (§6.5) and a sum of amounts against different snapshots has no single base.
+1. Incidents are taken in conviction order: conviction epoch ascending, then conviction-record hash ascending (lowercase hex compared as strings) within an epoch.
+2. For a member and an incident at conviction epoch `t`, `used` is the sum of the member's *applied* fractions from earlier incidents (in that order) whose conviction epoch lies in the rolling `30`-epoch window ending at `t` (§2.4). Headroom is `max(0, PENALTY_CAP_AGGREGATE − used)`.
+3. The applied fraction is `min(fraction, headroom)`, where `fraction` is the incident's per-member fraction after `PENALTY_CAP_PER_INCIDENT` (step 5 above); the amount is `mul(applied, R)` against that incident's conviction checkpoint, as in step 6. A member whose applied fraction is 0 takes no penalty from that incident.
+4. The convicted member of each incident is never in that incident's list (step 2 above), so its own zeroing is untouched by this cap, as the paragraph above requires.
 
 ### 6.7 Cross-tribe appeal mechanism
 
