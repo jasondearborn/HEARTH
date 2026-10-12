@@ -73,12 +73,35 @@ protected file changed.
   Game: `voucherPenalty()` → `transitivePenalties(...)`; amount for a member is `.amount`.
   Gates: Python 22/22, engine 81/81, trace 118 tags.
 
+- 2026-10-11 (worker era begins): `independence.ts` (§4.5 hop and admitting-set checks, kin stake)
+  landed; issue #1 (first kin admission stakes 1.5×) was the first opencode worker PR, merged.
+  Spec §4.5(b): empty admitting sets are exempt (definitional).
+
+- 2026-10-12 (nightly 1, director mode): **queue filled, no code written by the director.** No
+  PRs were waiting. Spec gained the definitional rules the next engine slices need, all
+  `[UNPROVEN]`: §2.4 "Windows" (days = epochs; a rolling W-window ending at t is `t−W < e ≤ t`),
+  §4.3 budget evaluation, §4.5 "which pair" (first two vouches; escalation 1 = a later voucher
+  hop-independent of both), §4.10 dormancy evaluation (half-open periods, distinct epochs, cooldown
+  from the latest end), §6.6 aggregate-cap computation (in fractions, conviction order, applied
+  not pre-cap fractions). Six issues filed with failing tests on `task/<n>-*` (from origin/main):
+  #3 quorum.ts (§6.3), #4 bridge.ts (§4.9), #5 connectivity.ts (§4.6, glm-5.3), #6 dormancy.ts
+  (§4.10), #7 aggregate.ts (§6.6), #8 admission.ts (§4.3/§4.5, game request, glm-5.3). #5, #7, #8
+  dispatched; the pump takes the rest. Each touches only its own new file; the director adds the
+  `index.ts` re-exports at merge.
+
 ## Next
-0. **Game: admission check** (Embers request): ≥2 vouchers, budget, §4.5 independence, as a pure
-   function the game can call. First slice of membership.ts (item 2).
-0b. **engine: `PENALTY_CAP_AGGREGATE`** (§6.6): clip a member's propagated losses across
-   incidents in a rolling 30 epochs, conviction order, same-epoch by conviction-record hash. Small
-   function over `transitivePenalties` outputs.
+0. **Review worker PRs #3–#8** (`agent:review`), merge into the nightly branch, add each module to
+   `engine/src/index.ts`. Then tell the game: `checkAdmission` (#8) replaces its admission count,
+   `quorum`/`appealIsGate`/`activeTribeSize` (#3) replace the `quorum()` stub.
+0a. **Spec open question: the admission floor** (§4.4, §4.9 item 1). §4.4 says a relay MUST reject
+   an AdmissionRecord whose combined discounted weight (§4.6) is below "the admission floor", but
+   no value, formula or App. D name exists, nor how vouch weight is combined with the connectivity
+   multiplier and bridge weight. #8 deliberately leaves it out. Define it (labelled) or demote the
+   MUST.
+0b. **Next worker issues once #3–#8 land:** §6.4 case state machine (case identity, CASE_WINDOW,
+   evidence-hash reuse, rate limit, N fixed at open; needs quorum.ts) and §6.2 contested pairs
+   (pin "trailing window" in the spec first: both complaints in the rolling RETALIATION_WINDOW
+   ending at t?). Game request "adjudication §6.1–§6.4".
 0c. **Spec open question: kin stake vs. penalty depth** (§6.6 finding, 2026-10-10). Decide whether
    per-edge weight should be capped at 1/g, the path fraction made non-increasing, or the spread
    accepted (threat-model row either way). Back the choice with a small sim.
@@ -86,8 +109,9 @@ protected file changed.
    overflow rule orders an issuer's whole epoch by `(sequence, record hash)`, so sequences from
    different recipients are compared. Deterministic (engine implements it as written), but
    meaningless as an order; consider an issuer-global sequence or `(record hash)` alone. Label it.
-2. **membership.ts (§4):** vouching, admission, voucher stake and slash, probation, expulsion.
-   Also the game's "vouch, admit and slash flow callable from a game tick".
+2. **membership flow (§4):** compose admission (#8), stake and slash, probation, expulsion into the
+   game's "vouch, admit and slash flow callable from a game tick". Admission, connectivity,
+   dormancy and bridge are now separate modules (#4–#8).
 3. **adjudication.ts (§6).**
 4. **Spec: §9 rᵢ(T) derivation is undefined (high, §16 #14).** Define it so clients converge,
    back it with a sim, then **federation.ts (§9)** plus the Appendix B worked example as a test.
@@ -106,6 +130,16 @@ protected file changed.
    default, `LAMBDA`).
 
 ## Decisions
+- 2026-10-12: engine work is split **one new module file per worker issue** (own src and test file,
+  no shared edits, `index.ts` left to the director) so up to three opencode workers run in parallel
+  without path overlap. Spec gaps found while writing the tests are closed in the spec (labelled
+  definitional) by the director before filing, and restated in the issue body because task branches
+  are cut from main, which does not have the new text until the nightly merges.
+- 2026-10-12: §4.5 independence is judged on the **first two vouches** in the record, not "any
+  pair": deterministic, and no restriction in practice since the submitter orders the list.
+  The aggregate cap (§6.6) is kept in **fractions**, because each incident's amount uses its own
+  conviction snapshot and amounts against different snapshots have no common base; headroom uses
+  applied (post-clip) fractions so a clipped incident does not consume headroom it never used.
 - 2026-10-09: reference engine in TypeScript, so the browser game and future clients share one
   implementation. The Python sims stay as the independent cross-check (golden vectors).
 - 2026-10-09: nightly work auto-merges to main through the runner's gate and protected-path
