@@ -8,3 +8,6 @@ export * from "./penalty.js";
 export * from "./aggregate.js";
 export * from "./connectivity.js";
 export * from "./admission.js";
+export * from "./quorum.js";
+export * from "./bridge.js";
+export * from "./dormancy.js";
