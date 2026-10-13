@@ -10,14 +10,17 @@ import * as embers from '../src/embers.js';
 import * as independence from '../src/independence.js';
 import * as ledger from '../src/ledger.js';
 import * as penalty from '../src/penalty.js';
+import * as aggregate from '../src/aggregate.js';
+import * as connectivity from '../src/connectivity.js';
+import * as admission from '../src/admission.js';
 
 test('index re-exports every module export, unchanged', () => {
-  for (const mod of [fixed, params, embers, independence, ledger, penalty]) {
+  for (const mod of [fixed, params, embers, independence, ledger, penalty, aggregate, connectivity, admission]) {
     for (const [name, value] of Object.entries(mod)) {
       assert.equal((engine as Record<string, unknown>)[name], value, name);
     }
   }
-  const all = new Set([fixed, params, embers, independence, ledger, penalty].flatMap((m) => Object.keys(m)));
+  const all = new Set([fixed, params, embers, independence, ledger, penalty, aggregate, connectivity, admission].flatMap((m) => Object.keys(m)));
   assert.deepEqual(Object.keys(engine).sort(), [...all].sort());
 });
 
