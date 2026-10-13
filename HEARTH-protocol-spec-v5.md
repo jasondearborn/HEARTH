@@ -649,6 +649,13 @@ A member may declare dormancy via a DormancyDeclaration. While dormant: decay pa
 - **Cooldown between declarations:** ≥ `DORMANCY_COOLDOWN` between the end of one dormancy period and the start of the next. (Parameter: `DORMANCY_COOLDOWN`, default 60 days, status: sim-backed, evidence: Appendix A.6 — simulation recorded **zero** dormancy vouch-leaks across every seed and chill level: an agent cycling dormancy never appears in the vouch-eligible pool while dormant.) This closes the cycling-dormancy abuse this rule exists to stop.
 - **Evaluation (normative, added 2026-10-12).** A dormancy period covers epochs `start ≤ e < end`. A Steward relay MUST reject a DormancyDeclaration whose period, together with the member's earlier periods, puts more than `DORMANCY_MAX_DAYS` dormant epochs in any rolling `DORMANCY_ROLLING_WINDOW` (§2.4), or that starts fewer than `DORMANCY_COOLDOWN` epochs after the end of the member's previous period, or that overlaps an earlier period. `[UNPROVEN]`: definitional; A.6 simulated the limits, not this edge handling.
 - **Re-entry probation:** on return from dormancy, high-value actions (vouching, endorsing, Steward candidacy) are rate-limited for a probation window (Parameter: `DORMANCY_PROBATION`, default 14 days, status: provisional, evidence: none — mirrors D1's new-device probation pattern, §3).
+- **Probation windows (normative, added 2026-10-13).** Re-entry probation after a dormancy period
+  ending at `end` covers epochs `end ≤ e < end + DORMANCY_PROBATION`; kin-admission probation (§4.5)
+  covers `a ≤ e < a + KIN_PROBATION` for a kin-admission accepted at epoch `a`. "Rate-limited" above
+  names no rate, so a conforming relay MUST treat a member in re-entry probation as unable to vouch
+  or endorse (a rate of zero), the same as kin-admission probation; both also exclude the member
+  from N and from the distinct-complainant count (§6.3). `[UNPROVEN]`: definitional. The zero rate
+  is a choice made for want of a stated one; a positive rate would need its own parameter.
 
 ### 4.11 Tribe-schism semantics
 
@@ -907,6 +914,19 @@ HEARTH v5 explicitly does **not** support a live zero-knowledge range proof over
 
 **Rate limit:** at most `COMPLAINT_RATE_LIMIT` complaints per member per epoch (Parameter, default 1, status: provisional, evidence: none — carried mechanism from v3/v4, now unambiguously bound to the 24 h protocol epoch, §2, resolving what was previously an underspecified "epoch" in v3/v4 text).
 
+**Filing check (normative, added 2026-10-13).** A Steward relay evaluates a ComplaintRecord against
+the tribe's roster and the complaints it has already accepted, and rejects it on any of the
+following, all reported, in this order: (1) `evidence_hash` missing or not a well-formed hash
+(`evidence`); (2) complainant not roster-enrolled in the tribe (`complainant-not-enrolled`);
+(3) target not roster-enrolled in the tribe (`target-not-enrolled`); (4) complainant equal to target
+(`self-complaint`); (5) the complainant already has `COMPLAINT_RATE_LIMIT` accepted complaints in the
+same epoch (`rate-limit`); (6) `evidence_hash` equal to that of a complaint counted in a dismissed
+case (§6.4) (`evidence-reused`). Filing needs enrollment only; whether a complaint *counts* toward
+quorum is the separate eligibility test of §6.3. Sharing one `evidence_hash` across complaints in
+an open or convicted case is allowed (several witnesses may cite one record). `[UNPROVEN]`:
+definitional; the self-complaint rule and the reason order are new here, chosen so that every
+relay rejects the same records for the same reasons.
+
 ### 6.2 Retaliation discount rule
 
 Named for the documented eBay dynamic: conditional on one party leaving negative feedback, the other retaliates in kind more than 37% of the time, against a baseline negative-feedback rate under 0.3% [EBAY]. HEARTH's complaint system is symmetric (any member may complain about any other) and therefore inherits the identical retaliation setup eBay's asymmetric-feedback-rights fix was designed around; HEARTH does not remove symmetric complaint rights (that would be a much blunter tool), it discounts the retaliatory pattern instead:
@@ -917,6 +937,19 @@ A **contested pair** exists whenever a ComplaintRecord filed by member A against
 - **do not count toward the distinct-complainant fraction** used to gate quorum (§6.3) — either complaint can add discounted weight to an already-forming case, but neither can itself be one of the distinct complainants that pushes that case over the quorum threshold.
 
 A contested pair is resolved, not permanent: if one direction's case reaches quorum through **other**, distinct complainants (i.e., complainants outside the A/B pair itself), that direction's complaint is restored to full weight and counted normally, while the opposing direction's complaint remains discounted. Until that happens, both sides sit at half weight.
+
+**Contested evaluation (normative, added 2026-10-13).** "Both exist within a trailing window" means
+some rolling `RETALIATION_WINDOW` window (§2.4) contains both records' epochs. At epoch `t`, a
+complaint `x` (A against B, epoch `eₓ ≤ t`) is **contested** iff some complaint `y` (B against A,
+epoch `e_y ≤ t`) has `|eₓ − e_y| < RETALIATION_WINDOW`. The status depends only on the two records,
+so once both are filed it does not lapse as `t` advances: the window bounds how late a retaliation
+may come, not how long it lasts. The resolution clause above changes only the recorded weight:
+under the §6.3 conviction gate a case that reaches quorum without the pair is convicted either way,
+so no verdict depends on it. `[UNPROVEN]`: definitional. The alternative reading (both epochs in
+the window ending at the evaluation epoch) was rejected because the contest would then lapse once
+the earlier record left the window, 30 epochs on, well inside a 60-epoch case window: the
+retaliatory complaint would count in full after a delay, so retaliation would only be postponed,
+not discounted.
 
 This closes the specific attack the eBay lesson names — a member under legitimate complaint cannot manufacture an opposing case by complaining back at their own accusers — via a rule that does not create a new exploit of its own. A **purely chronological** rule (discount whichever complaint is filed second) would reward a first-mover attacker: someone who anticipates being complained about, or is actively abusing someone and expects them to eventually report it, could preemptively file a low-effort complaint against every plausible future accuser, so that when the genuine victim later complains, *their* complaint — not the abuser's strategic one — is the one discounted and dropped from the quorum count. Symmetric discounting removes that payoff entirely: filing first buys an attacker nothing, because both directions are discounted identically regardless of order.
 
@@ -965,6 +998,18 @@ Complaints are rate-limited per §6.1.
 - **Convicted:** the weighted-and-distinct-fraction gate (§6.3) is met within the case window. Conviction triggers penalty computation per the timing semantics in §6.5.
 - **Dismissed:** the case window expires without reaching quorum.
 - **Case identity and re-filing (normative, added in review 2026-10-07).** A case is identified by `(target, opened_epoch)`. A complaint against a target with an open case joins that case, and a target has at most one open case. A ComplaintRecord counted in a dismissed case MUST NOT be counted again, and a new complaint reusing its `evidence_hash` MUST be rejected. Without this, a dismissed case could be refiled every epoch. Declaring dormancy (§4.10) does not pause or close a case against the declarer. A complainant revoked or expelled before conviction drops out of the distinct count.
+- **Case evaluation (normative, added 2026-10-13).** Complaints against a target are taken in
+  `(epoch, record hash)` order. A case opened at epoch `o` is open at epochs `o ≤ e < o + CASE_WINDOW`
+  (the rolling window of §2.4 ending at `e` contains `o`). A complaint joins the target's open case,
+  or opens a new one at its own epoch if there is none; each complaint belongs to exactly one case.
+  The case is evaluated at every open epoch `e`, after all complaints of epoch `e` have joined: its
+  count is the number of distinct complainants who are eligible at `e` (§6.3) and have at least one
+  joined complaint not contested at `e` (§6.2). It is convicted at the first such `e` where the count
+  reaches the quorum fixed from N at opening (§6.3); if none, it is dismissed at epoch
+  `o + CASE_WINDOW`. A complaint filed after the conviction epoch, or at or after the dismissal
+  epoch, opens a new case. `[UNPROVEN]`:
+  definitional; evaluating every epoch, not only on a new complaint, makes a complainant who
+  regains eligibility count without refiling.
 - **Appeal window:** following conviction, a window (Parameter: `APPEAL_WINDOW`, default 14 days, status: provisional, evidence: none) during which the convicted member (or any Trusted+ member acting on their behalf) may invoke cross-tribe appeal (§6.7). For tribes ≥ 12 members, penalty is applied at conviction (§6.5) and the appeal window is a **backstop** — a successful appeal reverses it (§6.7). For tribes < 12, per the small-tribe rule (§6.3), the appeal window MUST elapse unexercised **before** penalty is applied at all — a **gate**, not a backstop, reflecting that small tribes' quorum is more readily captured.
 
 ### 6.5 Penalty timing semantics (MUST)
