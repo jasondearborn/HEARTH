@@ -649,6 +649,13 @@ A member may declare dormancy via a DormancyDeclaration. While dormant: decay pa
 - **Cooldown between declarations:** ≥ `DORMANCY_COOLDOWN` between the end of one dormancy period and the start of the next. (Parameter: `DORMANCY_COOLDOWN`, default 60 days, status: sim-backed, evidence: Appendix A.6 — simulation recorded **zero** dormancy vouch-leaks across every seed and chill level: an agent cycling dormancy never appears in the vouch-eligible pool while dormant.) This closes the cycling-dormancy abuse this rule exists to stop.
 - **Evaluation (normative, added 2026-10-12).** A dormancy period covers epochs `start ≤ e < end`. A Steward relay MUST reject a DormancyDeclaration whose period, together with the member's earlier periods, puts more than `DORMANCY_MAX_DAYS` dormant epochs in any rolling `DORMANCY_ROLLING_WINDOW` (§2.4), or that starts fewer than `DORMANCY_COOLDOWN` epochs after the end of the member's previous period, or that overlaps an earlier period. `[UNPROVEN]`: definitional; A.6 simulated the limits, not this edge handling.
 - **Re-entry probation:** on return from dormancy, high-value actions (vouching, endorsing, Steward candidacy) are rate-limited for a probation window (Parameter: `DORMANCY_PROBATION`, default 14 days, status: provisional, evidence: none — mirrors D1's new-device probation pattern, §3).
+- **Probation windows (normative, added 2026-10-13).** Re-entry probation after a dormancy period
+  ending at `end` covers epochs `end ≤ e < end + DORMANCY_PROBATION`; kin-admission probation (§4.5)
+  covers `a ≤ e < a + KIN_PROBATION` for a kin-admission accepted at epoch `a`. "Rate-limited" above
+  names no rate, so a conforming relay MUST treat a member in re-entry probation as unable to vouch
+  or endorse (a rate of zero), the same as kin-admission probation; both also exclude the member
+  from N and from the distinct-complainant count (§6.3). `[UNPROVEN]`: definitional. The zero rate
+  is a choice made for want of a stated one; a positive rate would need its own parameter.
 
 ### 4.11 Tribe-schism semantics
 
