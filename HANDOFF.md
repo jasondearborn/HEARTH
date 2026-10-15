@@ -15,7 +15,7 @@ must start with one of these tags:
 
 | Tag | Author |
 |---|---|
-| `🤖 opencode/<model>:` | a worker (e.g. `🤖 opencode/deepseek-v4.1-flash:`) |
+| `🤖 opencode/<model>:` | a worker (e.g. `🤖 opencode/deepseek-flash:`) |
 | `🧠 Claude:` | the Claude director |
 | `🛠 oc:` | the `oc` dispatcher (automatic notices only) |
 | *(no tag)* | Jason. Treat as director instructions. |
@@ -48,7 +48,7 @@ Branch `task/<n>-<slug>` holds failing tests at <sha>: <test files>.
 - src/sim/road.test.ts (read only)
 
 ## Model
-opencode-go/deepseek-v4.1-flash
+deepseek/deepseek-flash
 
 ## Notes
 Optional: pitfalls, related issues, what not to do.
