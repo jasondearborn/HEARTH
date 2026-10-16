@@ -5,7 +5,7 @@ copy at its root; `handoff/sync-handoff.sh` keeps them identical. Edit the canon
 
 ## Roles
 
-- **Director**: Claude (Opus) or Jason. Writes the task, writes the failing tests, reviews,
+- **Director**: Claude (Opus) or Jason. Writes the task and its test cases, reviews,
   merges. Only a director merges into `main`.
 - **Worker**: an opencode session (qwen-vm, OpenCode Go models; local Qwen as a last resort).
   Writes code on a task branch, checks in often, opens a PR, and stops.
@@ -37,15 +37,16 @@ The rules the code must follow. Exact names, signatures, field order, concrete e
 values. Link spec sections (file + heading) instead of pasting whole documents.
 
 ## Tests
-Branch `task/<n>-<slug>` holds failing tests at <sha>: <test files>.
-(Or "none" for docs-only work, with what to check instead.)
+The test cases the worker writes FIRST, before the code, and the file they go in (listed in
+Allowed paths). Each case: inputs and expected result. (Or "none" for docs-only work, with what
+to check instead.)
 
 ## Gate
 `npm ci && npm test && npm run build`
 
 ## Allowed paths
 - src/sim/road.ts
-- src/sim/road.test.ts (read only)
+- src/sim/road.test.ts
 
 ## Model
 deepseek/deepseek-flash
@@ -82,7 +83,8 @@ Moving to a new label removes the previous `agent:*` label. Exactly one `agent:*
    one you were dispatched to. Set `agent:working` and comment:
    `🤖 opencode/<model>: claimed. Session <id>, branch task/<n>-<slug>.`
 2. **Branch.** Work on `task/<n>-<slug>`. If the director already pushed it (tests first),
-   build on it; never rewrite its existing commits. Never push to `main`, never force-push.
+   build on it; never rewrite its existing commits. Otherwise write the test cases listed under
+   **Tests** first, commit them, and check they fail for the intended reason before writing code. Never push to `main`, never force-push.
 3. **Stay in scope.** Edit only **Allowed paths**. Never edit tests the director wrote,
    `.github/`, `scripts/*gate*`, `AGENTS.md`, `HANDOFF.md`, `LICENSE`. If the task cannot be
    done inside the allowed paths, that is a BLOCKED question, not a reason to widen scope.
@@ -124,8 +126,8 @@ The last line of the worker's final message is `HANDOFF: REVIEW` or `HANDOFF: BL
 
 ## Director protocol
 
-1. **File** the issue (template above). Write failing tests first and push them to
-   `task/<n>-<slug>` whenever there is something testable. Pick the model from the ranking
+1. **File** the issue (template above). List the test cases under **Tests**; the worker writes them
+   first, then the code. Pick the model from the ranking
    (Claude: memory `opencode-go-models`). Label `agent:ready`.
 2. **Dispatch** with `oc dispatch <repo> <n>` (or let the nightly runner do it), or start an
    opencode session by hand and point it at the issue.
