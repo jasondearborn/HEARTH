@@ -16,14 +16,18 @@ import * as admission from '../src/admission.js';
 import * as quorum from '../src/quorum.js';
 import * as bridge from '../src/bridge.js';
 import * as dormancy from '../src/dormancy.js';
+import * as complaint from '../src/complaint.js';
+import * as contested from '../src/contested.js';
+import * as caseModule from '../src/case.js';
+import * as standing from '../src/standing.js';
 
 test('index re-exports every module export, unchanged', () => {
-  for (const mod of [fixed, params, embers, independence, ledger, penalty, aggregate, connectivity, admission, quorum, bridge, dormancy]) {
+  for (const mod of [fixed, params, embers, independence, ledger, penalty, aggregate, connectivity, admission, quorum, bridge, dormancy, complaint, contested, caseModule, standing]) {
     for (const [name, value] of Object.entries(mod)) {
       assert.equal((engine as Record<string, unknown>)[name], value, name);
     }
   }
-  const all = new Set([fixed, params, embers, independence, ledger, penalty, aggregate, connectivity, admission, quorum, bridge, dormancy].flatMap((m) => Object.keys(m)));
+  const all = new Set([fixed, params, embers, independence, ledger, penalty, aggregate, connectivity, admission, quorum, bridge, dormancy, complaint, contested, caseModule, standing].flatMap((m) => Object.keys(m)));
   assert.deepEqual(Object.keys(engine).sort(), [...all].sort());
 });
 
