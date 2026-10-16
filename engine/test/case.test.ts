@@ -29,7 +29,7 @@ test('adjudicate: CASE_WINDOW = 60, open at opened <= e < opened + 60', () => {
   assert.equal(in159.length, 1);
   assert.deepEqual([in159[0]!.status, in159[0]!.closedEpoch], ['convicted', 159]);
   // at 160 the first case has closed: the third complaint opens a new case
-  const at160 = run([c('1', 'a', 100), c('2', 'b', 110), c('3', 'c', 160)]);
+  const at160 = run([c('1', 'a', 100), c('2', 'b', 110), c('3', 'c', 160)], { t: 200 });
   assert.deepEqual(at160.map((k) => [k.openedEpoch, k.status, k.closedEpoch, k.complaints, k.counted]), [
     [100, 'dismissed', 160, [hex('1'), hex('2')], ['a', 'b']],
     [160, 'pending', null, [hex('3')], ['c']],
@@ -80,7 +80,7 @@ test('adjudicate: quorum is fixed from the opening epoch', () => {
 });
 
 test('adjudicate: same-epoch complaints all join the convicting case; a later one opens a new case', () => {
-  const out = run([c('4', 'd', 100), c('1', 'a', 100), c('2', 'b', 100), c('3', 'c', 100), c('5', 'e', 101)]);
+  const out = run([c('4', 'd', 100), c('1', 'a', 100), c('2', 'b', 100), c('3', 'c', 100), c('5', 'e', 101)], { t: 150 });
   assert.deepEqual(out.map((k) => [k.openedEpoch, k.status, k.closedEpoch, k.complaints, k.counted]), [
     [100, 'convicted', 100, [hex('1'), hex('2'), hex('3'), hex('4')], ['a', 'b', 'c', 'd']],
     [101, 'pending', null, [hex('5')], ['e']],
